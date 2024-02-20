@@ -167,9 +167,7 @@ void excluirProduto(FILE *arquivo, int id)
 }
 
 //cria nova venda
-void criarNovaVenda(FILE *arquivo)
-{
-    limparTela();
+void criarNovaVenda(FILE *arquivo) {
     int id;
     printf("Digite o ID do produto vendido: ");
     scanf("%d", &id);
@@ -177,43 +175,64 @@ void criarNovaVenda(FILE *arquivo)
     Produto produto;
     int encontrado = 0;
 
+    FILE *tempArquivo;
+    tempArquivo = fopen("temp.dat", "wb"); // Arquivo temporário
+
     rewind(arquivo);
-    while(fread(&produto, sizeof(Produto), 1, arquivo))
-    {
-        if (produto.id == id)
-        {
+    while(fread(&produto, sizeof(Produto), 1, arquivo)) {
+        if (produto.id == id) {
             encontrado = 1;
             int quantidadeVendida;
             printf("Digite a quantidade vendida: ");
             scanf("%d", &quantidadeVendida);
 
-            if (quantidadeVendida > produto.quantidade)
-            {
+            if (quantidadeVendida <= 0) {
+                printf("Quantidade inválida de produtos.\n");
+                fclose(tempArquivo);
+                remove("temp.dat");
+                return;
+            }
+
+            if (quantidadeVendida > produto.quantidade) {
                 printf("Quantidade insuficiente em estoque.\n");
+                fclose(tempArquivo);
+                remove("temp.dat");
                 return;
             }
 
             produto.quantidade -= quantidadeVendida;
 
-            if (produto.quantidade < 0)
-            {
-                printf("Erro: Estoque negativo após a venda.\n");
-                return;
-            }
-
-            // Voltar para a posição do registro no arquivo
-            fseek(arquivo, -sizeof(Produto), SEEK_CUR);
-            // Escrever de volta no mesmo local do arquivo
-            fwrite(&produto, sizeof(Produto), 1, arquivo);
-            fflush(arquivo); // Forçar a escrita no arquivo
-            printf("Venda realizada com sucesso.\n");
-            break;
+            // Escrever o produto atualizado no arquivo temporário
+            fwrite(&produto, sizeof(Produto), 1, tempArquivo);
+        } else {
+            // Escrever outros produtos no arquivo temporário sem modificação
+            fwrite(&produto, sizeof(Produto), 1, tempArquivo);
         }
+    }
+
+    // Fechar ambos os arquivos
+    fclose(arquivo);
+    fclose(tempArquivo);
+
+    // Remover o arquivo original
+    remove("produtos.dat");
+
+    // Renomear o arquivo temporário para o nome original
+    rename("temp.dat", "produtos.dat");
+
+    // Reabrir o arquivo principal para atualizar a variável arquivo
+    arquivo = fopen("produtos.dat", "rb+");
+    if (arquivo == NULL) {
+        printf("Erro ao reabrir o arquivo.\n");
+        exit(1);
     }
 
     if (!encontrado)
         printf("Produto não encontrado.\n");
+    else
+        printf("Venda realizada com sucesso.\n");
 }
+
 
 //menu
 void menuGP(FILE *arquivo)   //menu gerenciar programa
@@ -234,54 +253,54 @@ void menuGP(FILE *arquivo)   //menu gerenciar programa
 
         switch(opcao)
         {
-        case 1:
-            limparTela();
-            cadastrarProduto(arquivo);
-            break;
-        case 2:
-            limparTela();
-            listarProdutos(arquivo);
-            break;
-        case 3:
-            printf("Escolha como deseja buscar o produto:\n");
-            printf("1 - Por ID\n");
-            printf("2 - Por nome\n");
-            printf("Opção: ");
-            int escolha;
-            scanf("%d", &escolha);
-            if (escolha == 1)
-            {
-                printf("Digite o ID do produto a ser buscado: ");
-                int id;
-                scanf("%d", &id);
-                buscarProduto(arquivo, 1, id, "");
-            }
-            else if (escolha == 2)
-            {
-                printf("Digite o nome do produto a ser buscado: ");
-                char nome[50];
-                scanf("%s", nome);
-                buscarProduto(arquivo, 0, 0, nome);
-            }
-            else
-            {
+            case 1:
+                limparTela();
+                cadastrarProduto(arquivo);
+                break;
+            case 2:
+                limparTela();
+                listarProdutos(arquivo);
+                break;
+            case 3:
+                printf("Escolha como deseja buscar o produto:\n");
+                printf("1 - Por ID\n");
+                printf("2 - Por nome\n");
+                printf("Opção: ");
+                int escolha;
+                scanf("%d", &escolha);
+                if (escolha == 1)
+                {
+                    printf("Digite o ID do produto a ser buscado: ");
+                    int id;
+                    scanf("%d", &id);
+                    buscarProduto(arquivo, 1, id, "");
+                }
+                else if (escolha == 2)
+                {
+                    printf("Digite o nome do produto a ser buscado: ");
+                    char nome[50];
+                    scanf("%s", nome);
+                    buscarProduto(arquivo, 0, 0, nome);
+                }
+                else
+                {
+                    printf("Opção inválida.\n");
+                }
+                break;
+            case 4:
+                printf("Digite o ID do produto a ser excluído: ");
+                int idExcluir;
+                scanf("%d", &idExcluir);
+                excluirProduto(arquivo, idExcluir);
+                printf("Produto excluído com sucesso.\n");
+                break;
+            case 5:
+                break;
+            case 0:
+                printf("Saindo...\n");
+                break;
+            default:
                 printf("Opção inválida.\n");
-            }
-            break;
-        case 4:
-            printf("Digite o ID do produto a ser excluído: ");
-            int idExcluir;
-            scanf("%d", &idExcluir);
-            excluirProduto(arquivo, idExcluir);
-            printf("Produto excluído com sucesso.\n");
-            break;
-        case 5:
-            break;
-        case 0:
-            printf("Saindo...\n");
-            break;
-        default:
-            printf("Opção inválida.\n");
         }
     }
     while(opcao != 0);
@@ -314,18 +333,18 @@ int main()
 
         switch(opcao)
         {
-        case 1:
-            limparTela();
-            menuGP(produtosArquivo);
-            break;
-        case 2:
-            criarNovaVenda(produtosArquivo);
-            break;
-        case 0:
-            printf("Finalizando...\n");
-            break;
-        default:
-            printf("Opção inválida.\n");
+            case 1:
+                limparTela();
+                menuGP(produtosArquivo);
+                break;
+            case 2:
+                criarNovaVenda(produtosArquivo);
+                break;
+            case 0:
+                printf("Finalizando...\n");
+                break;
+            default:
+                printf("Opção inválida.\n");
         }
     }
     while(opcao != 0);
