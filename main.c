@@ -10,20 +10,6 @@ typedef struct {
     int quantidade;
 } Produto;
 
-typedef struct {
-    int id;
-    char nome[50];
-    char endereco[100];
-} Cliente;
-
-typedef struct {
-    int id;
-    int idCliente;
-    int idProduto;
-    int quantidade;
-} Pedido;
-
-
 // Funções para operações de estoque
 void cadastrarProduto(FILE *arquivo) {
     Produto produto;
@@ -44,20 +30,44 @@ void listarProdutos(FILE *arquivo) {
     Produto produto;
     rewind(arquivo);
     printf("\nLista de Produtos:\n");
+
+    // Verificar se o arquivo está vazio
+    fseek(arquivo, 0, SEEK_END);
+    if (ftell(arquivo) == 0) {
+        printf("Nenhum produto cadastrado.\n");
+        return;
+    }
+    rewind(arquivo);
+
     while(fread(&produto, sizeof(Produto), 1, arquivo)) {
         printf("ID: %d, Nome: %s, Preço: %.2f, Quantidade: %d\n", produto.id, produto.nome, produto.preco, produto.quantidade);
     }
 }
 
+void buscarProduto(FILE *arquivo, int buscarPorId, int id, char *nome) {
+    Produto produto;
+    rewind(arquivo);
+    int encontrado = 0;
 
-void menuGP() {
-    FILE *produtosArquivo;
-    produtosArquivo = fopen("produtos.dat", "ab+"); // Abre o arquivo para leitura e escrita binária, cria se não existir
-
-    if (produtosArquivo == NULL) {
-        printf("Erro ao abrir o arquivo.\n");
+    // Iterar sobre o arquivo procurando pelo produto com o ID ou nome fornecido
+    while(fread(&produto, sizeof(Produto), 1, arquivo)) {
+        if ((buscarPorId && produto.id == id) || (!buscarPorId && strcmp(produto.nome, nome) == 0)) {
+            printf("Produto encontrado:\n");
+            printf("ID: %d, Nome: %s, Preço: %.2f, Quantidade: %d\n", produto.id, produto.nome, produto.preco, produto.quantidade);
+            encontrado = 1;
+        }
     }
 
+    // Se o produto não for encontrado, exibir mensagem de não encontrado
+    if (!encontrado) {
+        if (buscarPorId)
+            printf("Produto com ID %d não encontrado.\n", id);
+        else
+            printf("Produto com nome '%s' não encontrado.\n", nome);
+    }
+}
+
+void menuGP(FILE *arquivo) { //menu gerenciar programa
     int opcao;
     do {
         printf("\nMenu:\n");
@@ -71,10 +81,31 @@ void menuGP() {
 
         switch(opcao) {
             case 1:
-                cadastrarProduto(produtosArquivo);
+                cadastrarProduto(arquivo);
                 break;
             case 2:
-                listarProdutos(produtosArquivo);
+                listarProdutos(arquivo);
+                break;
+            case 3:
+                printf("Escolha como deseja buscar o produto:\n");
+                printf("1 - Por ID\n");
+                printf("2 - Por nome\n");
+                printf("Opção: ");
+                int escolha;
+                scanf("%d", &escolha);
+                if (escolha == 1) {
+                    printf("Digite o ID do produto a ser buscado: ");
+                    int id;
+                    scanf("%d", &id);
+                    buscarProduto(arquivo, 1, id, "");
+                } else if (escolha == 2) {
+                    printf("Digite o nome do produto a ser buscado: ");
+                    char nome[50];
+                    scanf("%s", nome);
+                    buscarProduto(arquivo, 0, 0, nome);
+                } else {
+                    printf("Opção inválida.\n");
+                }
                 break;
             case 0:
                 printf("Saindo...\n");
@@ -83,11 +114,7 @@ void menuGP() {
                 printf("Opção inválida.\n");
         }
     } while(opcao != 0);
-
-    fclose(produtosArquivo);
-
 }
-
 
 // Função principal
 int main() {
