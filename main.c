@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+void limparTela() {
+    system("cls");
+}
+
 // Definição das structs
 typedef struct {
     int id;
@@ -24,11 +28,13 @@ void cadastrarProduto(FILE *arquivo) {
     printf("Digite a quantidade do produto: ");
     scanf("%d", &produto.quantidade);
     fwrite(&produto, sizeof(Produto), 1, arquivo);
+    limparTela();
 }
 
 void listarProdutos(FILE *arquivo) {
     Produto produto;
     rewind(arquivo);
+    limparTela();
     printf("\nLista de Produtos:\n");
 
     // Verificar se o arquivo está vazio
@@ -81,9 +87,11 @@ void menuGP(FILE *arquivo) { //menu gerenciar programa
 
         switch(opcao) {
             case 1:
+                limparTela();
                 cadastrarProduto(arquivo);
                 break;
             case 2:
+                limparTela();
                 listarProdutos(arquivo);
                 break;
             case 3:
@@ -137,6 +145,7 @@ int main() {
 
         switch(opcao) {
             case 1:
+                limparTela();
                 menuGP(produtosArquivo);
                 break;
             case 2:
