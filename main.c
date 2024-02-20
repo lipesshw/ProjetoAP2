@@ -181,8 +181,7 @@ int main() {
     int opcao;
     do {
         printf("\nMenu:\n");
-        printf("1 - Gerenciar produtos\n");
-        printf("2 - Gerenciar pedidos\n");
+        printf("1 - Gerenciar produtos\n "); // falta apenas tratamento de erros
         printf("0 - Sair\n");
         printf("Escolha uma opção: ");
         scanf("%d", &opcao);
