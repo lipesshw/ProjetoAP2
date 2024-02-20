@@ -73,6 +73,43 @@ void buscarProduto(FILE *arquivo, int buscarPorId, int id, char *nome) {
     }
 }
 
+void excluirProduto(FILE *arquivo, int id) {
+    FILE *tempArquivo;
+    Produto produto;
+
+    // Abre um arquivo temporário para escrita
+    tempArquivo = fopen("temp.dat", "wb");
+    if (tempArquivo == NULL) {
+        printf("Erro ao abrir o arquivo temporário.\n");
+        return;
+    }
+
+    rewind(arquivo);
+    while(fread(&produto, sizeof(Produto), 1, arquivo)) {
+        if (produto.id != id) {
+            // Escreve o produto no arquivo temporário se o ID não corresponder ao ID a ser excluído
+            fwrite(&produto, sizeof(Produto), 1, tempArquivo);
+        }
+    }
+
+    // Fecha ambos os arquivos
+    fclose(arquivo);
+    fclose(tempArquivo);
+
+    // Remove o arquivo original
+    remove("produtos.dat");
+
+    // Renomeia o arquivo temporário para o nome original
+    rename("temp.dat", "produtos.dat");
+
+    // Reabre o arquivo principal para atualizar a variável arquivo
+    arquivo = fopen("produtos.dat", "rb+");
+    if (arquivo == NULL) {
+        printf("Erro ao reabrir o arquivo.\n");
+        exit(1);
+    }
+}
+
 void menuGP(FILE *arquivo) { //menu gerenciar programa
     int opcao;
     do {
@@ -114,6 +151,13 @@ void menuGP(FILE *arquivo) { //menu gerenciar programa
                 } else {
                     printf("Opção inválida.\n");
                 }
+                break;
+            case 4:
+                printf("Digite o ID do produto a ser excluído: ");
+                int idExcluir;
+                scanf("%d", &idExcluir);
+                excluirProduto(arquivo, idExcluir);
+                printf("Produto excluído com sucesso.\n");
                 break;
             case 0:
                 printf("Saindo...\n");
