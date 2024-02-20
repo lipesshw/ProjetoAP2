@@ -16,19 +16,46 @@ typedef struct {
 
 // Funções para operações de estoque
 void cadastrarProduto(FILE *arquivo) {
-    Produto produto;
+    Produto novoProduto;
+    Produto produtoExistente;
+
+    // Ler os dados do novo produto
     printf("Digite o ID do produto: ");
-    scanf("%d", &produto.id);
+    scanf("%d", &novoProduto.id);
+
+    // Verificar se o ID já existe
+    rewind(arquivo);
+    while(fread(&produtoExistente, sizeof(Produto), 1, arquivo)) {
+        if (produtoExistente.id == novoProduto.id) {
+            printf("Erro: Produto com o mesmo ID já existe.\n"); //Verifica se o id do produto já existe, se existir, dá erro.
+            return;
+        }
+    }
+
+    getchar(); // Limpar o buffer do teclado
     printf("Digite o nome do produto: ");
-    getchar(); // Limpa o buffer do teclado
-    fgets(produto.nome, sizeof(produto.nome), stdin); // Permite espaços no nome
-    produto.nome[strcspn(produto.nome, "\n")] = '\0'; // Remove a nova linha do nome
-    printf("Digite o preco do produto: ");
-    scanf("%f", &produto.preco);
+    fgets(novoProduto.nome, sizeof(novoProduto.nome), stdin);
+    novoProduto.nome[strcspn(novoProduto.nome, "\n")] = '\0'; // Remover a nova linha do nome
+
+    // Verificar se o nome já existe
+    rewind(arquivo);
+    while(fread(&produtoExistente, sizeof(Produto), 1, arquivo)) {
+        if (strcmp(produtoExistente.nome, novoProduto.nome) == 0) {
+            printf("Produto com o mesmo nome já existe. Tente novamente! \n"); //Verifica se o nome do produto já existe, se existir, dá erro.
+            return;
+        }
+    }
+
+    printf("Digite o preço do produto: ");
+    scanf("%f", &novoProduto.preco);
     printf("Digite a quantidade do produto: ");
-    scanf("%d", &produto.quantidade);
-    fwrite(&produto, sizeof(Produto), 1, arquivo);
-    limparTela();
+    scanf("%d", &novoProduto.quantidade);
+
+    // Adicionar o novo produto ao arquivo
+    fseek(arquivo, 0, SEEK_END);
+    fwrite(&novoProduto, sizeof(Produto), 1, arquivo);
+
+    printf("Produto cadastrado com sucesso.\n");
 }
 
 void listarProdutos(FILE *arquivo) {
@@ -182,6 +209,7 @@ int main() {
     do {
         printf("\nMenu:\n");
         printf("1 - Gerenciar produtos\n "); // falta apenas tratamento de erros
+        printf("2 - Criar nova venda\n "); // falta apenas tratamento de erros
         printf("0 - Sair\n");
         printf("Escolha uma opção: ");
         scanf("%d", &opcao);
