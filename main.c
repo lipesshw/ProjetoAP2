@@ -144,9 +144,9 @@ void criarNovaVenda(FILE *arquivo) {
     scanf("%d", &id);
 
     Produto produto;
-    rewind(arquivo);
     int encontrado = 0;
 
+    rewind(arquivo);
     while(fread(&produto, sizeof(Produto), 1, arquivo)) {
         if (produto.id == id) {
             encontrado = 1;
@@ -166,9 +166,12 @@ void criarNovaVenda(FILE *arquivo) {
                 return;
             }
 
+            // Voltar para a posição do registro no arquivo
             fseek(arquivo, -sizeof(Produto), SEEK_CUR);
+            // Escrever de volta no mesmo local do arquivo
             fwrite(&produto, sizeof(Produto), 1, arquivo);
-            fflush(arquivo); // Força a escrita no arquivo
+            fflush(arquivo); // Forçar a escrita no arquivo
+            printf("Venda realizada com sucesso.\n");
             break;
         }
     }
