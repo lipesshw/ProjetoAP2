@@ -69,29 +69,6 @@ void cadastrarProduto(FILE *arquivo)
     printf("Produto cadastrado com sucesso.\n");
 }
 
-// Lista produtos
-void listarProdutos(FILE *arquivo)
-{
-    Produto produto;
-    rewind(arquivo);
-    limparTela();
-    printf("\nLista de Produtos:\n");
-
-    // Verificar se o arquivo está vazio
-    fseek(arquivo, 0, SEEK_END);
-    if (ftell(arquivo) == 0)
-    {
-        printf("Nenhum produto cadastrado.\n");
-        return;
-    }
-    rewind(arquivo);
-
-    while(fread(&produto, sizeof(Produto), 1, arquivo))
-    {
-        printf("ID: %d, Nome: %s, Preço: %.2f, Quantidade: %d\n", produto.id, produto.nome, produto.preco, produto.quantidade);
-    }
-}
-
 //busca
 void buscarProduto(FILE *arquivo, int buscarPorId, int id, char *nome)
 {
@@ -228,6 +205,40 @@ void criarNovaVenda(FILE *arquivo) {
         printf("Produto não encontrado.\n");
     else
         printf("Venda realizada com sucesso.\n");
+}
+
+
+
+// Lista produtos
+void listarProdutos(FILE *arquivo)
+{
+    Produto produto;
+    rewind(arquivo);
+    limparTela();
+    printf("\nLista de Produtos:\n");
+
+    // Verificar se o arquivo está vazio
+    fseek(arquivo, 0, SEEK_END);
+    if (ftell(arquivo) == 0)
+    {
+        printf("Nenhum produto cadastrado.\n");
+        return;
+    }
+    rewind(arquivo);
+
+    while(fread(&produto, sizeof(Produto), 1, arquivo))
+    {
+        printf("ID: %d, Nome: %s, Preço: %.2f, Quantidade: %d\n", produto.id, produto.nome, produto.preco, produto.quantidade);
+
+        char res;
+        printf("\nVocê deseja realizar uma nova venda? [s/n]: ");
+        scanf("%s", &res);
+        if(res == 's' || res == 'S') {
+            criarNovaVenda(arquivo);
+        } else {
+            break;
+        }
+    }
 }
 
 
