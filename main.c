@@ -72,7 +72,6 @@ void cadastrarProduto(FILE *arquivo)
 // Lista produtos
 void listarProdutos(FILE *arquivo)
 {
-    limparTela();
     Produto produto;
     rewind(arquivo);
     limparTela();
@@ -96,7 +95,6 @@ void listarProdutos(FILE *arquivo)
 //busca
 void buscarProduto(FILE *arquivo, int buscarPorId, int id, char *nome)
 {
-    limparTela();
     Produto produto;
     rewind(arquivo);
     int encontrado = 0;
@@ -125,7 +123,6 @@ void buscarProduto(FILE *arquivo, int buscarPorId, int id, char *nome)
 // Excluir produto
 void excluirProduto(FILE *arquivo, int id)
 {
-    limparTela();
     FILE *tempArquivo;
     Produto produto;
 
@@ -237,7 +234,6 @@ void criarNovaVenda(FILE *arquivo) {
 //menu
 void menuGP(FILE *arquivo)   //menu gerenciar programa
 {
-    limparTela();
     int opcao;
     do
     {
@@ -323,7 +319,6 @@ int main()
     int opcao;
     do
     {
-        limparTela();
         printf("\nMenu:\n");
         printf("1 - Gerenciar produtos\n "); // falta apenas tratamento de erros
         printf("2 - Realizar nova venda\n "); // falta apenas tratamento de erros
@@ -334,7 +329,6 @@ int main()
         switch(opcao)
         {
             case 1:
-                limparTela();
                 menuGP(produtosArquivo);
                 break;
             case 2:
