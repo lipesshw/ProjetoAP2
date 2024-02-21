@@ -22,24 +22,123 @@ typedef struct
 //Cadastro
 void cadastrarProduto(FILE *arquivo)
 {
-    limparTela();
     Produto novoProduto;
     Produto produtoExistente;
+    int idValido = 0;
+    int nomeValido = 0;
+    int precoValido = 0;
+    int quantValido = 0;
 
-    // Ler os dados do novo produto
-    printf("Digite o ID do produto: ");
-    scanf("%d", &novoProduto.id);
-
-    // Verificar se o ID já existe
-    rewind(arquivo);
-    while(fread(&produtoExistente, sizeof(Produto), 1, arquivo))
+    // Loop para solicitar um ID válido
+    do
     {
-        if (produtoExistente.id == novoProduto.id)
+        // Ler os dados do novo produto
+        printf("Digite o ID do produto: ");
+        scanf("%d", &novoProduto.id);
+
+        // Verifica se o ID do produto é negativo
+        if (novoProduto.id < 0)
         {
-            printf("Erro: Produto com o mesmo ID já existe.\n"); //Verifica se o id do produto já existe, se existir, dá erro.
+            printf("ID do produto não pode ser negativo. Tente novamente!\n");
+        }
+        else
+        {
+            // Verifica se o ID do produto já existe
+            rewind(arquivo);
+            while (fread(&produtoExistente, sizeof(Produto), 1, arquivo))
+            {
+                if (produtoExistente.id == novoProduto.id)
+                {
+                    printf("Produto com o mesmo ID já existe. Tente novamente!\n");
+                    idValido = 0;
+                    break;
+                }
+                else
+                {
+                    idValido = 1;
+                }
+            }
+        }
+    }
+    while (novoProduto.id < 0 || idValido == 0);
+
+    getchar(); // Limpar o buffer do teclado
+
+    do
+    {
+        printf("Digite o nome do produto (não pode conter números): ");
+
+        fgets(novoProduto.nome, sizeof(novoProduto.nome), stdin);
+
+        novoProduto.nome[strcspn(novoProduto.nome, "\n")] = '\0'; // Remover a nova linha do nome
+
+        // Verifica se o nome do produto contém números
+        for (int i = 0; novoProduto.nome[i] != '\0'; i++)
+        {
+            if (isdigit(novoProduto.nome[i]))
+            {
+                printf("O nome do produto não pode conter números. Tente novamente!\n");
+                nomeValido = 0;
+                break;
+            }
+            else
+            {
+                nomeValido = 1;
+            }
+        }
+    }
+    while (nomeValido == 0);
+
+    // Verifica se o nome do produto já existe
+    rewind(arquivo);
+    while (fread(&produtoExistente, sizeof(Produto), 1, arquivo))
+    {
+        if (strcmp(produtoExistente.nome, novoProduto.nome) == 0)
+        {
+            printf("Erro: Produto com o mesmo nome já existe. Tente novamente!\n");
             return;
         }
     }
+    //Verifica se o preço do produto é válido.
+    do
+    {
+        printf("Digite o preço do produto: ");
+        if (scanf("%f", &novoProduto.preco) != 1 || novoProduto.preco < 0)
+        {
+            printf("O preço do produto deve ser um número válido. Tente novamente!\n");
+            while (getchar() != '\n'); // Limpar o buffer do teclado
+        }
+        else
+        {
+            precoValido = 1;
+        }
+    }
+    while (precoValido == 0);
+
+    //Verifica se a quantidade do produto é válido.
+    do
+    {
+        printf("Digite a quantidade do produto: ");
+        if (scanf("%d", &novoProduto.quantidade) != 1 || novoProduto.quantidade < 0)
+        {
+            printf("A quantidade do produto é inválida. Tente novamente!\n");
+            while(getchar() != '\n'); // Limpar o buffer do teclado
+        }
+        else
+        {
+            quantValido = 1;
+        }
+
+    }
+    while (quantValido == 0);
+
+
+    // Adicionar o novo produto ao arquivo
+    fseek(arquivo, 0, SEEK_END);
+    fwrite(&novoProduto, sizeof(Produto), 1, arquivo);
+
+    printf("Produto cadastrado com sucesso!\n");
+}
 
     getchar(); // Limpar o buffer do teclado
     printf("Digite o nome do produto: ");
