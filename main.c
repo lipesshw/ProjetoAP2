@@ -34,10 +34,10 @@ void cadastrarProduto(FILE *arquivo) {
         printf("Digite o ID do produto: ");
         if (scanf("%d", &novoProduto.id) != 1 || novoProduto.id < 0) {
             printf("ID do produto não pode ser negativo ou inválido. Tente novamente!\n");
-            while (getchar() != '\n'); 
+            while (getchar() != '\n');
         } else {
-           
-           
+
+
             // Verifica se o ID do produto já existe
             rewind(arquivo);
             while (fread(&produtoExistente, sizeof(Produto), 1, arquivo)) {
@@ -271,17 +271,16 @@ void listarProdutos(FILE *arquivo)
     while(fread(&produto, sizeof(Produto), 1, arquivo))
     {
         printf("ID: %d, Nome: %s, Preço: %.2f, Quantidade: %d\n", produto.id, produto.nome, produto.preco, produto.quantidade);
-
+        }
         char res;
-        printf("\nVocê deseja realizar uma nova venda? [s/n]:");
+        printf("\n Você deseja realizar uma nova venda? [s/n]:");
         scanf("%s", &res);
         if(res == 's' || res == 'S') {
             criarNovaVenda(arquivo);
-        } else {
-            break;
         }
+
     }
-}
+
 
 
 //menu
