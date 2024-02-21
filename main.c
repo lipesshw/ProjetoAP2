@@ -34,7 +34,7 @@ void cadastrarProduto(FILE *arquivo)
     int nomeValido = 0;
     int precoValido = 0;
     int quantValido = 0;
- limparTela();
+    limparTela();
     do
     {
         printf("Digite o ID do produto: ");
@@ -97,7 +97,8 @@ void cadastrarProduto(FILE *arquivo)
     do
     {
         printf("Digite o preço do produto: ");
-        if (scanf("%f", &novoProduto.preco) != 1 || novoProduto.preco < 0)
+        scanf("%f", &novoProduto.preco);
+        if ( novoProduto.preco < 0)
         {
             printf("O preço do produto deve ser um número válido e não negativo. Tente novamente!\n");
             while (getchar() != '\n'); // Limpar o buffer do teclado
@@ -113,7 +114,8 @@ void cadastrarProduto(FILE *arquivo)
     do
     {
         printf("Digite a quantidade do produto: ");
-        if (scanf("%d", &novoProduto.quantidade) != 1 || novoProduto.quantidade < 0)
+        scanf("%d", &novoProduto.quantidade);
+        if (novoProduto.quantidade < 0)
         {
             printf("A quantidade do produto deve ser um número inteiro válido e não negativo. Tente novamente!\n");
             while (getchar() != '\n'); // Limpar o buffer do teclado
@@ -204,6 +206,7 @@ void excluirProduto(FILE *arquivo, int id)
         exit(1);
     }
 }
+
 // recursiva: valor vendido
 float Venda(int quant, float preco)
 {
@@ -216,6 +219,7 @@ float Venda(int quant, float preco)
         return preco+Venda( quant-1,preco);
     }
 }
+
 //cria nova venda
 void criarNovaVenda(FILE *arquivo)
 {
@@ -257,7 +261,7 @@ void criarNovaVenda(FILE *arquivo)
             }
 
             produto.quantidade -= quantidadeVendida;
-            printf("\n \tForam vendidos: %f em produtos \n", Venda(quantidadeVendida,produto.preco));
+            printf("\n \tForam vendidos: %.2f em produtos \n", Venda(quantidadeVendida,produto.preco));
 
             sleep(2);
 
@@ -316,7 +320,7 @@ void listarProdutos(FILE *arquivo)
 
     while(fread(&produto, sizeof(Produto), 1, arquivo))
     {
-        printf("ID: %d, Nome: %s, Preço: %.2f, Quantidade: %d\n", produto.id, produto.nome, produto.preco, produto.quantidade);
+        printf("\t ID: %d, Nome: %s, Preço: %.2f, Quantidade: %d\n", produto.id, produto.nome, produto.preco, produto.quantidade);
     }
 
     char res;
@@ -328,7 +332,30 @@ void listarProdutos(FILE *arquivo)
     }
 }
 
+// Lista produtos sem estoque
+void ListaSemEstoque(FILE *arquivo)
+{
+    Produto produto;
+    rewind(arquivo);
+    printf("\n \t Produtos sem estoque\n");
 
+// Verificar se o arquivo está vazio
+    fseek(arquivo, 0, SEEK_END);
+    if (ftell(arquivo) == 0)
+    {
+        printf("Nenhum produto cadastrado.\n");
+        return;
+    }
+    rewind(arquivo);
+    while(fread(&produto, sizeof(Produto), 1, arquivo))
+    {
+        if(produto.quantidade==0)
+        {
+
+            printf("\t ID: %d, Nome: %s, Preço: %.2f, Quantidade: %d\n", produto.id, produto.nome, produto.preco, produto.quantidade);
+        }
+    }
+}
 
 //menu
 void menuGP(FILE *arquivo)   //menu gerenciar programa
@@ -337,14 +364,15 @@ void menuGP(FILE *arquivo)   //menu gerenciar programa
     limparTela();
     do
     {
-        printf("\nMenu:\n");
+        printf("\n Menu:\n");
         printf("1 - Criar produto\n");
         printf("2 - Listar todos produtos\n");
-        printf("3 - Buscar produto específico\n");
-        printf("4 - Excluir produto\n");
+        printf("3 - Listar produtos sem estoque\n");
+        printf("4 - Buscar produto específico\n");
+        printf("5 - Excluir produto\n");
         printf("\n");
-        printf("0 - Voltar para menu principal\n");
-        printf("Escolha uma opção: ");
+        printf(" 0 - Voltar para menu principal\n");
+        printf(" Escolha uma opção: ");
         scanf("%d", &opcao);
 
         switch(opcao)
@@ -358,6 +386,10 @@ void menuGP(FILE *arquivo)   //menu gerenciar programa
             listarProdutos(arquivo);
             break;
         case 3:
+            limparTela();
+            ListaSemEstoque(arquivo);
+            break;
+        case 4:
             limparTela();
             printf("Escolha como deseja buscar o produto:\n");
             printf("1 - Por ID\n");
@@ -384,14 +416,14 @@ void menuGP(FILE *arquivo)   //menu gerenciar programa
                 printf("Opção inválida.\n");
             }
             break;
-        case 4:
+        case 5:
             printf("Digite o ID do produto a ser excluído: ");
             int idExcluir;
             scanf("%d", &idExcluir);
             excluirProduto(arquivo, idExcluir);
             printf("Produto excluído com sucesso.\n");
             break;
-        case 5:
+        case 6:
             break;
         case 0:
             printf("Saindo...\n");
@@ -420,11 +452,11 @@ int main()
     int opcao;
     do
     {
-        printf("\n Menu:\n");
-        printf("1 - Gerenciar produtos\n "); // falta apenas tratamento de erros
+        printf("\n   Menu:\n");
+        printf(" 1 - Gerenciar produtos\n "); // falta apenas tratamento de erros
         printf("2 - Realizar nova venda\n "); // falta apenas tratamento de erros
         printf("0 - Sair\n");
-        printf("Escolha uma opção: ");
+        printf(" Escolha uma opção: ");
         scanf("%d", &opcao);
 
         switch(opcao)
@@ -439,7 +471,7 @@ int main()
             printf("Finalizando...\n");
             break;
         default:
-            printf("Opção inválida.\n");
+            printf("\t Opção inválida.\n");
         }
     }
     while(opcao != 0);
