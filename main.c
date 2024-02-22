@@ -41,7 +41,7 @@ void cadastrarProduto(FILE *arquivo)
         scanf("%d", &novoProduto.id);
         if (novoProduto.id < 0)
         {
-            printf("ID do produto não pode ser negativo ou inválido. Tente novamente!\n");
+            printf("O ID do produto não pode ser negativo ou inválido. Tente novamente!\n");
             while (getchar() != '\n');
         }
         else
@@ -166,7 +166,15 @@ void buscarProduto(FILE *arquivo, int buscarPorId, int id, char *nome)
 
 // Excluir produto
 void excluirProduto(FILE *arquivo, int id)
+
 {
+   while (id < 0)
+    {
+        printf("O ID do produto é inválido. Tente novamente!\n");
+        printf("Digite o ID do produto a ser excluído: ");
+        scanf("%d", &id);
+    }
+
     FILE *tempArquivo;
     Produto produto;
 
