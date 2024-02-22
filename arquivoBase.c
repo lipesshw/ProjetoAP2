@@ -2,12 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
-
+#include <unistd.h>
 
 int vendasRealizadas = 0;
 int produtosExcluidos = 0;
-
-
 
 // limpa tela
 void limparTela()
@@ -399,25 +397,50 @@ void gerarRelatorio(FILE *arquivo)
         return;
     }
 
-    int produtosAdicionados = 0;
+    int totalVendas = vendasRealizadas; // Total de vendas realizadas
+    float totalVendasR = 0; // Total em R$ das vendas realizadas
+    int produtosAdicionados = 0; // Total de produtos adicionados
+    int produtosVendidos = 0; // Total de produtos vendidos
 
     Produto produto;
 
-    // Contar o número de produtos adicionados
+    // Contagem do número de produtos adicionados
     rewind(arquivo);
     while (fread(&produto, sizeof(Produto), 1, arquivo))
     {
         produtosAdicionados++;
     }
 
+    // Escrevendo os detalhes no relatório
     fprintf(relatorioArquivo, "Relatório:\n");
-    fprintf(relatorioArquivo, "Número de vendas realizadas: %d\n", vendasRealizadas);
+    fprintf(relatorioArquivo, "Número de vendas realizadas: %d\n", totalVendas);
     fprintf(relatorioArquivo, "Número de produtos adicionados: %d\n", produtosAdicionados);
     fprintf(relatorioArquivo, "Número de produtos excluídos: %d\n", produtosExcluidos);
+    fprintf(relatorioArquivo, "Número de produtos vendidos: %d\n", produtosVendidos);
 
+    // Escrevendo detalhes sobre os produtos adicionados
+    rewind(arquivo);
+    fprintf(relatorioArquivo, "\nDetalhes dos produtos adicionados:\n");
+    fprintf(relatorioArquivo, "-------------------------------\n");
+    while (fread(&produto, sizeof(Produto), 1, arquivo))
+    {
+        fprintf(relatorioArquivo, "ID: %d, Nome: %s, Preço: %.2f, Quantidade: %d\n", produto.id, produto.nome, produto.preco, produto.quantidade);
+    }
+
+    // Calcular o total em R$ das vendas realizadas
+    rewind(arquivo);
+    totalVendasR = 0;
+    while (fread(&produto, sizeof(Produto), 1, arquivo))
+    {
+        totalVendasR += (produto.preco * (5 - produto.quantidade)); // Corrigido para calcular corretamente o total em R$
+        produtosVendidos += (5 - produto.quantidade); // Corrigido para contar corretamente o número de produtos vendidos
+    }
+
+    fprintf(relatorioArquivo, "\n\nTotal em R$ das vendas realizadas: %.2f\n", totalVendasR);
     fclose(relatorioArquivo);
     printf("Relatório gerado com sucesso.\n");
 }
+
 
 //menu
 void menuGP(FILE *arquivo)   //menu gerenciar programa
