@@ -143,6 +143,12 @@ void buscarProduto(FILE *arquivo, int buscarPorId, int id, char *nome)
     int encontrado = 0;
     limparTela();
 
+    while (buscarPorId && id <= 0) {
+        printf("ID do produto inválido. Tente novamente!\n");
+        printf("Digite o ID do produto que deseja buscar: ");
+        scanf("%d", &id);
+    }
+
     // Iterar sobre o arquivo procurando pelo produto com o ID ou nome fornecido
     while(fread(&produto, sizeof(Produto), 1, arquivo))
     {
@@ -168,7 +174,7 @@ void buscarProduto(FILE *arquivo, int buscarPorId, int id, char *nome)
 void excluirProduto(FILE *arquivo, int id)
 
 {
-    while (id < 0)
+    while (id <= 0)
     {
         printf("O ID do produto é inválido. Tente novamente!\n");
         printf("Digite o ID do produto a ser excluído: ");
@@ -422,14 +428,14 @@ void menuGP(FILE *arquivo)   //menu gerenciar programa
             scanf("%d", &escolha);
             if (escolha == 1)
             {
-                printf("Digite o ID do produto a ser buscado: ");
+                printf("Digite o ID do produto que deseja buscar: ");
                 int id;
                 scanf("%d", &id);
                 buscarProduto(arquivo, 1, id, "");
             }
             else if (escolha == 2)
             {
-                printf("Digite o nome do produto a ser buscado: ");
+                printf("Digite o nome do produto que deseja buscar: ");
                 char nome[50];
                 scanf("%s", nome);
                 buscarProduto(arquivo, 0, 0, nome);
