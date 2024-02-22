@@ -168,7 +168,7 @@ void buscarProduto(FILE *arquivo, int buscarPorId, int id, char *nome)
 void excluirProduto(FILE *arquivo, int id)
 
 {
-   while (id < 0)
+    while (id < 0)
     {
         printf("O ID do produto é inválido. Tente novamente!\n");
         printf("Digite o ID do produto a ser excluído: ");
@@ -231,10 +231,18 @@ float Venda(int quant, float preco)
 //cria nova venda
 void criarNovaVenda(FILE *arquivo)
 {
+
     limparTela();
     int id;
     printf("Digite o ID do produto vendido: ");
     scanf("%d", &id);
+
+    while (id < 0)
+    {
+        printf("O Produto não foi encontrado. Tente novamente!\n");
+        printf("Digite o ID do produto vendido: ");
+        scanf("%d", &id);
+    }
 
     Produto produto;
     int encontrado = 0;
@@ -251,6 +259,13 @@ void criarNovaVenda(FILE *arquivo)
             int quantidadeVendida;
             printf("Digite a quantidade vendida: ");
             scanf("%d", &quantidadeVendida);
+
+            while (quantidadeVendida <= 0)
+            {
+                printf("Quantidade inválida de produtos. Tente novamente!\n");
+                printf("Digite a quantidade vendida: ");
+                scanf("%d", &quantidadeVendida);
+            }
 
             if (quantidadeVendida <= 0)
             {
@@ -302,7 +317,7 @@ void criarNovaVenda(FILE *arquivo)
     }
 
     if (!encontrado)
-        printf("Produto não encontrado.\n");
+        printf("Produto não foi encontrado. Tente novamente!\n");
     else
         printf("Venda realizada com sucesso.\n");
 }
@@ -328,7 +343,7 @@ void listarProdutos(FILE *arquivo)
 
     while(fread(&produto, sizeof(Produto), 1, arquivo))
     {
-        printf("\t ID: %d, Nome: %s, Preço: %.2f, Quantidade: %d\n", produto.id, produto.nome, produto.preco, produto.quantidade);
+        printf("\t ID: %d  || Nome: %s || Preço: %.2f  || Quantidade: %d\n", produto.id, produto.nome, produto.preco, produto.quantidade);
     }
 
     char res;
