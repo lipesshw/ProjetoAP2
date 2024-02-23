@@ -7,6 +7,7 @@
 int vendasRealizadas = 0;
 int produtosExcluidos = 0;
 int produtosVendidos = 0; // Declarando a variável globalmente
+float totalVendido = 0;
 
 // limpa tela
 void limparTela()
@@ -25,6 +26,7 @@ typedef struct
 
 // Funções para operações de estoque
 
+//Cadastro
 void cadastrarProduto(FILE *arquivo)
 {
     if (arquivo == NULL)
@@ -103,7 +105,7 @@ void cadastrarProduto(FILE *arquivo)
     {
         printf("Digite o preço do produto: ");
         scanf("%f", &novoProduto.preco);
-        if ( novoProduto.preco < 0)
+        if (novoProduto.preco < 0)
         {
             printf("O preço do produto deve ser um número válido e não negativo. Tente novamente!\n");
             while (getchar() != '\n'); // Limpar o buffer do teclado
@@ -120,7 +122,7 @@ void cadastrarProduto(FILE *arquivo)
     {
         printf("Digite a quantidade do produto: ");
         scanf("%d", &novoProduto.quantidade);
-        if (novoProduto.quantidade < 0||novoProduto.quantidade>100)
+        if (novoProduto.quantidade < 0)
         {
             printf("A quantidade do produto deve ser um número inteiro válido e não negativo. Tente novamente!\n");
             while (getchar() != '\n'); // Limpar o buffer do teclado
@@ -171,7 +173,6 @@ void buscarProduto(FILE *arquivo, int buscarPorId, int id, char *nome)
 
 // Excluir produto
 void excluirProduto(FILE *arquivo, int id)
-
 {
     while (id < 0)
     {
@@ -192,18 +193,24 @@ void excluirProduto(FILE *arquivo, int id)
     }
 
     rewind(arquivo);
-    while(fread(&produto, sizeof(Produto), 1, arquivo))
+    int algumProdutoExcluido = 0; // Variável para verificar se algum produto foi excluído
+    while (fread(&produto, sizeof(Produto), 1, arquivo))
     {
         if (produto.id != id)
         {
             fwrite(&produto, sizeof(Produto), 1, tempArquivo);
-            produtosExcluidos++;
+            algumProdutoExcluido = 1; // Marca que algum produto foi excluído
         }
     }
 
     // Fecha ambos os arquivos
     fclose(arquivo);
     fclose(tempArquivo);
+
+    // Se algum produto foi excluído, incrementa a variável produtosExcluidos
+    if (algumProdutoExcluido) {
+        produtosExcluidos++;
+    }
 
     // Remove o arquivo original
     remove("produtos.dat");
@@ -220,16 +227,17 @@ void excluirProduto(FILE *arquivo, int id)
     }
 }
 
+
 // recursiva: valor vendido
 float Venda(int quant, float preco)
 {
-    if(quant==1)
+    if (quant == 0)
     {
-        return preco;
+        return 0;
     }
     else
     {
-        return preco+Venda( quant-1,preco);
+        return preco + Venda(quant - 1, preco);
     }
 }
 
@@ -260,6 +268,7 @@ void criarNovaVenda(FILE *arquivo)
     {
         if (produto.id == id)
         {
+            printf("%s selecionado ", produto.nome);
             encontrado = 1;
             int quantidadeVendida;
             printf("Digite a quantidade vendida: ");
@@ -272,24 +281,17 @@ void criarNovaVenda(FILE *arquivo)
                 scanf("%d", &quantidadeVendida);
             }
 
-            if (quantidadeVendida <= 0)
+            while (quantidadeVendida > produto.quantidade)
             {
-                printf("Quantidade inválida de produtos.\n");
-                fclose(tempArquivo);
-                remove("temp.dat");
-                return;
-            }
+                printf("Quantidade insuficiente em estoque. Tente novamente!\n");
+                  printf("Digite a quantidade vendida: ");
+                scanf("%d", &quantidadeVendida);
 
-            if (quantidadeVendida > produto.quantidade)
-            {
-                printf("Quantidade insuficiente em estoque.\n");
-                fclose(tempArquivo);
-                remove("temp.dat");
-                return;
             }
 
             produto.quantidade -= quantidadeVendida;
-            printf("\n \tForam vendidos: %.2f em produtos \n", quantidadeVendida * produto.preco);
+            printf("\n \tForam vendidos R$ %.2f em %s \n", Venda(quantidadeVendida, produto.preco),produto.nome);
+            totalVendido+=Venda(quantidadeVendida,produto.preco);
 
             // Atualizar a contagem de produtos vendidos
             produtosVendidos += quantidadeVendida;
@@ -327,12 +329,11 @@ void criarNovaVenda(FILE *arquivo)
     if (!encontrado)
         printf("Produto não foi encontrado. Tente novamente!\n");
     else
+    {
         printf("Venda realizada com sucesso.\n");
         vendasRealizadas++;
+    }
 }
-
-
-
 
 // Lista produtos
 void listarProdutos(FILE *arquivo)
@@ -358,7 +359,7 @@ void listarProdutos(FILE *arquivo)
 
     char res;
     printf("\n Você deseja realizar uma nova venda? [s/n]:");
-    scanf("%s", &res);
+    scanf(" %c", &res);
     if(res == 's' || res == 'S')
     {
         criarNovaVenda(arquivo);
@@ -390,7 +391,7 @@ void ListaSemEstoque(FILE *arquivo)
     }
 }
 
-//Adiciona estoque
+//adiciona estoque
 void adicionarEstoque(FILE *arquivo)
 {
     limparTela();
@@ -403,6 +404,15 @@ void adicionarEstoque(FILE *arquivo)
         printf("ID do produto inválido. Tente novamente!\n");
         printf("Digite o ID do produto para adicionar estoque: ");
         scanf("%d", &id);
+    }
+
+    FILE *tempArquivo;
+    tempArquivo = fopen("temp.dat", "wb"); // Arquivo temporário
+
+    if (tempArquivo == NULL)
+    {
+        printf("Erro ao abrir o arquivo temporário.\n");
+        return;
     }
 
     Produto produto;
@@ -430,24 +440,45 @@ void adicionarEstoque(FILE *arquivo)
             // Atualizar a quantidade do produto
             produto.quantidade += quantidadeAdicionar;
             printf("Estoque atualizado com sucesso.\n");
+        }
 
-            // Atualizar o registro no arquivo
-            fseek(arquivo, -sizeof(Produto), SEEK_CUR);
-            fwrite(&produto, sizeof(Produto), 1, arquivo);
-            fflush(arquivo); // Forçar a escrita imediata no arquivo
+        // Escrever o produto no arquivo temporário
+        fwrite(&produto, sizeof(Produto), 1, tempArquivo);
+    }
 
-            break;
+    // Se o produto não foi encontrado, mantemos o arquivo inalterado
+    if (!encontrado)
+    {
+        printf("Produto não encontrado.\n");
+
+        // Copiar todos os produtos do arquivo original para o arquivo temporário
+        rewind(arquivo);
+        while (fread(&produto, sizeof(Produto), 1, arquivo))
+        {
+            fwrite(&produto, sizeof(Produto), 1, tempArquivo);
         }
     }
 
-    if (!encontrado)
-        printf("Produto não encontrado.\n");
+    // Fechar ambos os arquivos
+    fclose(arquivo);
+    fclose(tempArquivo);
 
-    getchar(); // Limpar o buffer do teclado
+    // Remover o arquivo original
+    remove("produtos.dat");
+
+    // Renomear o arquivo temporário para o nome original
+    rename("temp.dat", "produtos.dat");
+
+    // Reabrir o arquivo principal para atualizar a variável arquivo
+    arquivo = fopen("produtos.dat", "rb+");
+    if (arquivo == NULL)
+    {
+        printf("Erro ao reabrir o arquivo.\n");
+        exit(1);
+    }
 }
 
-
-// Gera relatorio 
+//gera relatorio
 void gerarRelatorio(FILE *arquivo)
 {
     FILE *relatorioArquivo;
@@ -462,7 +493,6 @@ void gerarRelatorio(FILE *arquivo)
     int totalVendas = vendasRealizadas; // Total de vendas realizadas
     float totalVendasR = 0;             // Total em R$ das vendas realizadas
     int produtosAdicionados = 0;        // Total de produtos adicionados
-    int produtosVendidos = 0;            // Total de produtos vendidos
 
     Produto produto;
 
@@ -478,11 +508,6 @@ void gerarRelatorio(FILE *arquivo)
     fprintf(relatorioArquivo, "Número de vendas realizadas: %d\n", totalVendas);
     fprintf(relatorioArquivo, "Número de produtos adicionados: %d\n", produtosAdicionados);
     fprintf(relatorioArquivo, "Número de produtos excluídos: %d\n", produtosExcluidos);
-
-    // Calcular o número de produtos vendidos
-    produtosVendidos = vendasRealizadas;
-
-    // Escrever o número de produtos vendidos no relatório
     fprintf(relatorioArquivo, "Número de produtos vendidos: %d\n", produtosVendidos);
 
     // Escrevendo detalhes sobre os produtos adicionados
@@ -494,18 +519,13 @@ void gerarRelatorio(FILE *arquivo)
         fprintf(relatorioArquivo, "ID: %d, Nome: %s, Preço: %.2f, Quantidade: %d\n", produto.id, produto.nome, produto.preco, produto.quantidade);
     }
 
-    // Calcular o total em R$ das vendas realizadas
-    rewind(arquivo);
-    totalVendasR = 0;
-    while (fread(&produto, sizeof(Produto), 1, arquivo))
-    {
-        totalVendasR += (100 - produto.quantidade)* produto.preco;
-    }
-
-    fprintf(relatorioArquivo, "\n\nTotal em R$ das vendas realizadas: %.2f\n", totalVendasR);
+    fprintf(relatorioArquivo, "\nTotal em R$ das vendas realizadas: %.2f\n", totalVendido);
     fclose(relatorioArquivo);
+    sleep(1);
     printf("Relatório gerado com sucesso.\n");
+    sleep(1);
 }
+
 
 
 
@@ -616,7 +636,7 @@ int main()
         printf(" Escolha uma opção: \n");
         scanf("%d", &opcao);
 
-        switch (opcao)
+        switch(opcao)
         {
         case 1:
             menuGP(produtosArquivo);
@@ -628,13 +648,14 @@ int main()
             gerarRelatorio(produtosArquivo);
             break;
         case 0:
-            printf("Finalizando...\n");
+            printf("Saindo...\n");
             break;
         default:
-            printf("\t Opção inválida.\n");
+            printf("Opção inválida.\n");
         }
-    } while (opcao != 0);
+    }
+    while(opcao != 0);
 
-    fclose(produtosArquivo);
+    fclose(produtosArquivo); // Fecha o arquivo
     return 0;
 }
