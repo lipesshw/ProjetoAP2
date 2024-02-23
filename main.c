@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+#include <unistd.h>
+
+int vendasRealizadas = 0;
+int produtosExcluidos = 0;
+int produtosVendidos = 0; // Declarando a variável globalmente
+
 // limpa tela
 void limparTela()
 {
@@ -143,12 +149,6 @@ void buscarProduto(FILE *arquivo, int buscarPorId, int id, char *nome)
     int encontrado = 0;
     limparTela();
 
-    while (buscarPorId && id <= 0) {
-        printf("ID do produto inválido. Tente novamente!\n");
-        printf("Digite o ID do produto que deseja buscar: ");
-        scanf("%d", &id);
-    }
-
     // Iterar sobre o arquivo procurando pelo produto com o ID ou nome fornecido
     while(fread(&produto, sizeof(Produto), 1, arquivo))
     {
@@ -174,7 +174,7 @@ void buscarProduto(FILE *arquivo, int buscarPorId, int id, char *nome)
 void excluirProduto(FILE *arquivo, int id)
 
 {
-    while (id <= 0)
+    while (id < 0)
     {
         printf("O ID do produto é inválido. Tente novamente!\n");
         printf("Digite o ID do produto a ser excluído: ");
@@ -197,8 +197,8 @@ void excluirProduto(FILE *arquivo, int id)
     {
         if (produto.id != id)
         {
-            // Escreve o produto no arquivo temporário se o ID não corresponder ao ID a ser excluído
             fwrite(&produto, sizeof(Produto), 1, tempArquivo);
+            produtosExcluidos++;
         }
     }
 
@@ -290,7 +290,10 @@ void criarNovaVenda(FILE *arquivo)
             }
 
             produto.quantidade -= quantidadeVendida;
-            printf("\n \tForam vendidos: %.2f em produtos \n", Venda(quantidadeVendida,produto.preco));
+            printf("\n \tForam vendidos: %.2f em produtos \n", quantidadeVendida * produto.preco);
+
+            // Atualizar a contagem de produtos vendidos
+            produtosVendidos += quantidadeVendida;
 
             sleep(2);
 
@@ -326,7 +329,9 @@ void criarNovaVenda(FILE *arquivo)
         printf("Produto não foi encontrado. Tente novamente!\n");
     else
         printf("Venda realizada com sucesso.\n");
+        vendasRealizadas++;
 }
+
 
 
 
@@ -386,6 +391,67 @@ void ListaSemEstoque(FILE *arquivo)
     }
 }
 
+void gerarRelatorio(FILE *arquivo)
+{
+    FILE *relatorioArquivo;
+    relatorioArquivo = fopen("relatorio.txt", "w"); // Abre o arquivo de relatório para escrita
+
+    if (relatorioArquivo == NULL)
+    {
+        printf("Erro ao abrir o arquivo de relatório.\n");
+        return;
+    }
+
+    int totalVendas = vendasRealizadas; // Total de vendas realizadas
+    float totalVendasR = 0;             // Total em R$ das vendas realizadas
+    int produtosAdicionados = 0;        // Total de produtos adicionados
+    int produtosVendidos = 0;            // Total de produtos vendidos
+
+    Produto produto;
+
+    // Contagem do número de produtos adicionados
+    rewind(arquivo);
+    while (fread(&produto, sizeof(Produto), 1, arquivo))
+    {
+        produtosAdicionados++;
+    }
+
+    // Escrevendo os detalhes no relatório
+    fprintf(relatorioArquivo, "Relatório:\n");
+    fprintf(relatorioArquivo, "Número de vendas realizadas: %d\n", totalVendas);
+    fprintf(relatorioArquivo, "Número de produtos adicionados: %d\n", produtosAdicionados);
+    fprintf(relatorioArquivo, "Número de produtos excluídos: %d\n", produtosExcluidos);
+
+    // Calcular o número de produtos vendidos
+    produtosVendidos = vendasRealizadas;
+
+    // Escrever o número de produtos vendidos no relatório
+    fprintf(relatorioArquivo, "Número de produtos vendidos: %d\n", produtosVendidos);
+
+    // Escrevendo detalhes sobre os produtos adicionados
+    rewind(arquivo);
+    fprintf(relatorioArquivo, "\nDetalhes dos produtos adicionados:\n");
+    fprintf(relatorioArquivo, "-------------------------------\n");
+    while (fread(&produto, sizeof(Produto), 1, arquivo))
+    {
+        fprintf(relatorioArquivo, "ID: %d, Nome: %s, Preço: %.2f, Quantidade: %d\n", produto.id, produto.nome, produto.preco, produto.quantidade);
+    }
+
+    // Calcular o total em R$ das vendas realizadas
+    rewind(arquivo);
+    totalVendasR = 0;
+    while (fread(&produto, sizeof(Produto), 1, arquivo))
+    {
+        totalVendasR += (100 - produto.quantidade) * produto.preco;
+    }
+
+    fprintf(relatorioArquivo, "\n\nTotal em R$ das vendas realizadas: %.2f\n", totalVendasR);
+    fclose(relatorioArquivo);
+    printf("Relatório gerado com sucesso.\n");
+}
+
+
+
 //menu
 void menuGP(FILE *arquivo)   //menu gerenciar programa
 {
@@ -395,13 +461,16 @@ void menuGP(FILE *arquivo)   //menu gerenciar programa
     {
         printf("\n Menu:\n");
         printf("1 - Criar produto\n");
-        printf("2 - Listar todos produtos\n");
-        printf("3 - Listar produtos sem estoque\n");
-        printf("4 - Buscar produto específico\n");
-        printf("5 - Excluir produto\n");
+        printf("2 - Adicionar estoque de um produto\n");
+        printf("3 - Excluir produto\n");
         printf("\n");
-        printf(" 0 - Voltar para menu principal\n");
-        printf(" Escolha uma opção: ");
+        printf("4 - Listar todos produtos\n");
+        printf("5 - Listar produtos sem estoque\n");
+        printf("6 - Buscar produto específico\n");
+        printf("\n");
+        printf("\n");
+        printf("0 - Voltar para menu principal\n\n");
+        printf(" Escolha uma opção: \n");
         scanf("%d", &opcao);
 
         switch(opcao)
@@ -411,14 +480,23 @@ void menuGP(FILE *arquivo)   //menu gerenciar programa
             cadastrarProduto(arquivo);
             break;
         case 2:
+            break;
+        case 3:
+            printf("Digite o ID do produto a ser excluído: ");
+            int idExcluir;
+            scanf("%d", &idExcluir);
+            excluirProduto(arquivo, idExcluir);
+            printf("Produto excluído com sucesso.\n");
+            break;
+        case 4:
             limparTela();
             listarProdutos(arquivo);
             break;
-        case 3:
+        case 5:
             limparTela();
             ListaSemEstoque(arquivo);
             break;
-        case 4:
+        case 6:
             limparTela();
             printf("Escolha como deseja buscar o produto:\n");
             printf("1 - Por ID\n");
@@ -428,14 +506,14 @@ void menuGP(FILE *arquivo)   //menu gerenciar programa
             scanf("%d", &escolha);
             if (escolha == 1)
             {
-                printf("Digite o ID do produto que deseja buscar: ");
+                printf("Digite o ID do produto a ser buscado: ");
                 int id;
                 scanf("%d", &id);
                 buscarProduto(arquivo, 1, id, "");
             }
             else if (escolha == 2)
             {
-                printf("Digite o nome do produto que deseja buscar: ");
+                printf("Digite o nome do produto a ser buscado: ");
                 char nome[50];
                 scanf("%s", nome);
                 buscarProduto(arquivo, 0, 0, nome);
@@ -444,15 +522,6 @@ void menuGP(FILE *arquivo)   //menu gerenciar programa
             {
                 printf("Opção inválida.\n");
             }
-            break;
-        case 5:
-            printf("Digite o ID do produto a ser excluído: ");
-            int idExcluir;
-            scanf("%d", &idExcluir);
-            excluirProduto(arquivo, idExcluir);
-            printf("Produto excluído com sucesso.\n");
-            break;
-        case 6:
             break;
         case 0:
             printf("Saindo...\n");
@@ -463,7 +532,6 @@ void menuGP(FILE *arquivo)   //menu gerenciar programa
     }
     while(opcao != 0);
 }
-
 // Função principal
 int main()
 {
@@ -482,13 +550,14 @@ int main()
     do
     {
         printf("\n   Menu:\n");
-        printf(" 1 - Gerenciar produtos\n "); // falta apenas tratamento de erros
-        printf("2 - Realizar nova venda\n "); // falta apenas tratamento de erros
-        printf("0 - Sair\n");
-        printf(" Escolha uma opção: ");
+        printf("1 - Gerenciar produtos\n"); // falta apenas tratamento de erros
+        printf("2 - Realizar nova venda\n"); // falta apenas tratamento de erros
+        printf("3 - Gerar relatório\n");
+        printf("0 - Sair\n\n");
+        printf(" Escolha uma opção: \n");
         scanf("%d", &opcao);
 
-        switch(opcao)
+        switch (opcao)
         {
         case 1:
             menuGP(produtosArquivo);
@@ -496,14 +565,16 @@ int main()
         case 2:
             criarNovaVenda(produtosArquivo);
             break;
+        case 3:
+            gerarRelatorio(produtosArquivo);
+            break;
         case 0:
             printf("Finalizando...\n");
             break;
         default:
             printf("\t Opção inválida.\n");
         }
-    }
-    while(opcao != 0);
+    } while (opcao != 0);
 
     fclose(produtosArquivo);
     return 0;
