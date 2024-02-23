@@ -25,7 +25,6 @@ typedef struct
 
 // Funções para operações de estoque
 
-//Cadastro
 void cadastrarProduto(FILE *arquivo)
 {
     if (arquivo == NULL)
@@ -121,7 +120,7 @@ void cadastrarProduto(FILE *arquivo)
     {
         printf("Digite a quantidade do produto: ");
         scanf("%d", &novoProduto.quantidade);
-        if (novoProduto.quantidade < 0)
+        if (novoProduto.quantidade < 0||novoProduto.quantidade>100)
         {
             printf("A quantidade do produto deve ser um número inteiro válido e não negativo. Tente novamente!\n");
             while (getchar() != '\n'); // Limpar o buffer do teclado
@@ -391,6 +390,7 @@ void ListaSemEstoque(FILE *arquivo)
     }
 }
 
+//Adiciona estoque
 void adicionarEstoque(FILE *arquivo)
 {
     limparTela();
@@ -447,7 +447,7 @@ void adicionarEstoque(FILE *arquivo)
 }
 
 
-
+// Gera relatorio 
 void gerarRelatorio(FILE *arquivo)
 {
     FILE *relatorioArquivo;
