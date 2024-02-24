@@ -105,42 +105,58 @@ void cadastrarProduto(FILE *arquivo)
     getchar();
 
     // laço para solicitar um nome válido
-    do
-    {
-        printf("\t\t\t\t\t\t\t\t\t\t\t         > Digite o NOME do produto: ");
-        fgets(novoProduto.nome, sizeof(novoProduto.nome), stdin);
-        novoProduto.nome[strcspn(novoProduto.nome, "\n")] = '\0'; // Remover a nova linha do nome
 
-        if (strlen(novoProduto.nome) == 0)
-        {
+    // laço para solicitar um nome válido
+do
+{
+    printf("\t\t\t\t\t\t\t\t\t\t\t         > Digite o NOME do produto: ");
+    fgets(novoProduto.nome, sizeof(novoProduto.nome), stdin);
+    novoProduto.nome[strcspn(novoProduto.nome, "\n")] = '\0'; // Remover a nova linha do nome
+
+    if (strlen(novoProduto.nome) == 0)
+    {
             printf("\n");
             printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t              O nome do produto não pode estar vazio.        \n"VERDE);
             printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                         Tente novamente!        \n"VERDE);
             printf("\n");
             sleep(2);
-        }
-        else
+    }
+    else
+    {
+        // Converter o nome para letras minúsculas (ou maiúsculas)
+        for (int i = 0; novoProduto.nome[i]; i++)
         {
-            // Verifica se o nome do produto já existe
-            rewind(arquivo);
-            nomeValido = 1;
-            while (fread(&produtoExistente, sizeof(Produto), 1, arquivo))
-            {
-                if (strcmp(produtoExistente.nome, novoProduto.nome) == 0)
-                {
+            novoProduto.nome[i] = tolower(novoProduto.nome[i]);
+        }
 
+        // Verifica se o nome do produto já existe
+        rewind(arquivo);
+        nomeValido = 1;
+        while (fread(&produtoExistente, sizeof(Produto), 1, arquivo))
+        {
+            // Converter o nome existente para letras minúsculas (ou maiúsculas) para comparação
+            char nomeExistenteLower[50];
+            strcpy(nomeExistenteLower, produtoExistente.nome);
+            for (int i = 0; nomeExistenteLower[i]; i++)
+            {
+                nomeExistenteLower[i] = tolower(nomeExistenteLower[i]);
+            }
+
+            if (strcmp(nomeExistenteLower, novoProduto.nome) == 0)
+            {
             printf("\n");
             printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                Produto com o mesmo nome já existe.        \n"VERDE);
             printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                        Tente novamente...              \n"VERDE );
             printf("\n");
             sleep(2);
-                    nomeValido = 0;
-                    break;
-                }
+                nomeValido = 0;
+                break;
             }
         }
     }
-    while (nomeValido == 0);
+} while (nomeValido == 0);
+
+
 
     // laço para solicitar um preço válido
     do
@@ -246,7 +262,7 @@ void buscarProduto(FILE *arquivo, int buscarPorId, int id, char *nome)
 
 
 
-// Excluir produto
+
 void excluirProduto(FILE *arquivo, int id)
 {
     while (id < 0)
@@ -260,9 +276,6 @@ void excluirProduto(FILE *arquivo, int id)
     }
 
     FILE *tempArquivo;
-    Produto produto;
-
-    // Abre um arquivo temporário para escrita
     tempArquivo = fopen("temp.dat", "wb");
     if (tempArquivo == NULL)
     {
@@ -270,25 +283,58 @@ void excluirProduto(FILE *arquivo, int id)
         return;
     }
 
-    rewind(arquivo);
+    Produto produto;
     int algumProdutoExcluido = 0; // Variável para verificar se algum produto foi excluído
+
+    rewind(arquivo);
+    int encontrado = 0; // Variável para verificar se o produto foi encontrado
     while (fread(&produto, sizeof(Produto), 1, arquivo))
     {
         if (produto.id != id)
         {
             fwrite(&produto, sizeof(Produto), 1, tempArquivo);
-            algumProdutoExcluido = 1; // Marca que algum produto foi excluído
+        }
+        else
+        {
+            encontrado = 1; // Marcar que o produto foi encontrado
+            algumProdutoExcluido = 1; // Marcar que algum produto foi excluído
         }
     }
 
-    // Fecha ambos os arquivos
-    fclose(arquivo);
-    fclose(tempArquivo);
+    // Verificar se o produto foi encontrado
+    if (!encontrado)
+    {
+            printf("\n\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|\t                  EXCLUIR PRODUTO                        |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|----------------------------------------------------------------|\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|"VERMELHO"                Produto com ID %-3d não encontrado               "VERDE"|\n", id);
+            printf("\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
+            sleep(2);
+            limparTela();
+    }
+    else
+    {
+            printf("\n\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|\t                  EXCLUIR PRODUTO                        |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|----------------------------------------------------------------|\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|                 Produto %d excluido com sucesso!                |\n", id);
+            printf("\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
+            sleep(2);
+            limparTela();
+    }
 
     // Se algum produto foi excluído, incrementa a variável produtosExcluidos
     if (algumProdutoExcluido) {
         produtosExcluidos++;
     }
+
+    // Fechar ambos os arquivos
+    fclose(arquivo);
+    fclose(tempArquivo);
 
     // Remove o arquivo original
     remove("produtos.dat");
@@ -304,6 +350,7 @@ void excluirProduto(FILE *arquivo, int id)
         exit(1);
     }
 }
+
 
 
 
@@ -696,7 +743,7 @@ void gerarRelatorio(FILE *arquivo)
 
     // Escrevendo detalhes sobre os produtos adicionados
     rewind(arquivo);
-    fprintf(relatorioArquivo, "\nDetalhes dos produtos adicionados:\n");
+    fprintf(relatorioArquivo, "\nDetalhes dos produtos existentes:\n");
     fprintf(relatorioArquivo, "-------------------------------\n");
     while (fread(&produto, sizeof(Produto), 1, arquivo))
     {
@@ -764,15 +811,6 @@ void menuGP(FILE *arquivo)   //menu gerenciar programa
             int idExcluir;
             scanf("%d", &idExcluir);
             excluirProduto(arquivo, idExcluir);
-            printf("\n\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|\t                  EXCLUIR PRODUTO                        |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|----------------------------------------------------------------|\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                 Produto %d excluido com sucesso!                |\n", idExcluir);
-            printf("\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
-            sleep(2);
-            limparTela();
             break;
         case 4:
             limparTela();
