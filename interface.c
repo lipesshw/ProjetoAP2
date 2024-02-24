@@ -53,6 +53,11 @@ void cadastrarProduto(FILE *arquivo)
     int precoValido = 0;
     int quantValido = 0;
     limparTela();
+
+
+
+    char idString[50]; // String para armazenar a entrada do ID
+
     do
     {
         printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
@@ -62,45 +67,78 @@ void cadastrarProduto(FILE *arquivo)
         printf("\t\t\t\t\t\t\t\t\t\t|---------------------------------------------------------------|\n");
         printf("\n");
         printf("\t\t\t\t\t\t\t\t\t\t\t         > Digite o ID do produto: ");
-        scanf("%d", &novoProduto.id);
-        if (novoProduto.id < 0)
+        scanf("%s", idString); // Lê a entrada como uma string
+
+        // Verifica se todos os caracteres da string são dígitos
+        int i;
+        idValido = 1;
+        for (i = 0; idString[i] != '\0'; i++)
         {
-            limparTela();
-            printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------------+\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                            |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|     "VERMELHO"O ID do produto não pode ser negativo ou inválido."VERDE"     |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                     "VERMELHO"Tente novamente..."VERDE"                     |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                            |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------------+\n");
-            sleep(2);
-            while (getchar() != '\n');
+            if (!isdigit(idString[i]))
+            {
+                limparTela();
+            printf("\n\t\t\t\t\t\t\t\t\t\t +------------------------------------------------------------+\n");
+            printf("\t\t\t\t\t\t\t\t\t\t |                                                            |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t |       "VERMELHO"O ID do produto deve conter apenas números."VERDE"          |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t |                     "VERMELHO"Tente novamente..."VERDE"                     |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t |                                                            |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t +------------------------------------------------------------+\n");
+                idValido = 0;
+                break;
+            }
         }
-        else
+
+        // Se todos os caracteres forem dígitos, converte a string para um número inteiro
+        if (idValido)
         {
+            novoProduto.id = atoi(idString);
+
             // Verifica se o ID do produto já existe
             rewind(arquivo);
-            idValido = 1;
             while (fread(&produtoExistente, sizeof(Produto), 1, arquivo))
             {
                 if (produtoExistente.id == novoProduto.id)
                 {
-            limparTela();
-
             printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
             printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
             printf("\t\t\t\t\t\t\t\t\t\t|          "VERMELHO"Produto com o mesmo ID já existe."VERDE"           |\n");
             printf("\t\t\t\t\t\t\t\t\t\t|                  "VERMELHO"Tente novamente..."VERDE"                  |\n");
             printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
             printf("\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
-            sleep(2);
-            limparTela();
                     idValido = 0;
                     break;
                 }
             }
         }
-    }
-    while (novoProduto.id < 0 || idValido == 0);
+    } while (!idValido);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     getchar();
 
