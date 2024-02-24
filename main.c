@@ -4,6 +4,15 @@
 #include <locale.h>
 #include <unistd.h>
 
+
+#define VERMELHO     "\x1b[31m" //cor vermelha
+#define VERDE   "\x1b[32m"
+#define AZUL    "\x1b[34m" // cor azul
+#define AMARELO  "\x1b[33m" // cor amarela
+#define CIANO    "\x1b[36m" // cor ciano
+#define MAGENTA  "\x1b[35m" // cor magenta
+#define RESET   "\x1b[0m"  //resetar parar cor branca
+
 int vendasRealizadas = 0;
 int produtosExcluidos = 0;
 int produtosVendidos = 0; // Declarando a variável globalmente
@@ -42,20 +51,33 @@ void cadastrarProduto(FILE *arquivo)
     int precoValido = 0;
     int quantValido = 0;
     limparTela();
-    do
+
+    char idString[50]; // String para armazenar a entrada do ID
+do
     {
         printf("Digite o ID do produto: ");
-        scanf("%d", &novoProduto.id);
-        if (novoProduto.id < 0)
+        scanf("%s", idString); // Lê a entrada como uma string
+
+        // Verifica se todos os caracteres da string são dígitos
+        int i;
+        idValido = 1;
+        for (i = 0; idString[i] != '\0'; i++)
         {
-            printf("O ID do produto não pode ser negativo ou inválido. Tente novamente!\n");
-            while (getchar() != '\n');
+            if (!isdigit(idString[i]))
+            {
+                printf("O ID do produto deve conter apenas números. Tente novamente!\n");
+                idValido = 0;
+                break;
+            }
         }
-        else
+
+        // Se todos os caracteres forem dígitos, converte a string para um número inteiro
+        if (idValido)
         {
+            novoProduto.id = atoi(idString);
+
             // Verifica se o ID do produto já existe
             rewind(arquivo);
-            idValido = 1;
             while (fread(&produtoExistente, sizeof(Produto), 1, arquivo))
             {
                 if (produtoExistente.id == novoProduto.id)
@@ -66,8 +88,7 @@ void cadastrarProduto(FILE *arquivo)
                 }
             }
         }
-    }
-    while (novoProduto.id < 0 || idValido == 0);
+    } while (!idValido);
 
     getchar();
 
