@@ -940,7 +940,7 @@ void menuGP(FILE *arquivo)   //menu gerenciar programa
         printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
         printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
         printf("\t\t\t\t\t\t\t\t\t\t|   "VERMELHO"A entrada deve ser um número. Tente novamente."VERDE"     |\n");
-        printf("\t\t\t\t\t\t\t\t\t\t|                "VERMELHO"Retornando..."VERDE"                         |\n");
+        printf("\t\t\t\t\t\t\t\t\t\t|                    "VERMELHO"Retornando..."VERDE"                     |\n");
         printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
         printf("\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
         sleep(2);
@@ -1083,15 +1083,15 @@ int main()
     do
     {
         printf("\n");
-         printf("\t\t\t\t\t\t\t\t                                                     ##                       ###\n");
-         printf("\t\t\t\t\t\t\t\t                                                     ##                        ##\n");
-         printf("\t\t\t\t\t\t\t\t       ####    ##  ##   ######             #####    #####    ####     ####     ##  ##\n");
-         printf("\t\t\t\t\t\t\t\t      ##  ##   #######   ##  ##  ######   ##         ##     ##  ##   ##  ##    ## ##\n");
-         printf("\t\t\t\t\t\t\t\t      ##       ## # ##   ##  ##            #####     ##     ##  ##   ##        ####\n");
-         printf("\t\t\t\t\t\t\t\t      ##  ##   ##   ##   #####                 ##    ## ##  ##  ##   ##  ##    ## ##\n");
-         printf("\t\t\t\t\t\t\t\t       ####    ##   ##   ##               ######      ###    ####     ####     ##  ##\n");
-         printf("\t\t\t\t\t\t\t\t                       ####\n");
-         printf("\t\t\t\t\t\t\t\t\t\t\t\t\t  v1.0\n");
+        printf("\t\t\t\t\t\t\t\t                                                     ##                       ###\n");
+        printf("\t\t\t\t\t\t\t\t                                                     ##                        ##\n");
+        printf("\t\t\t\t\t\t\t\t       ####    ##  ##   ######             #####    #####    ####     ####     ##  ##\n");
+        printf("\t\t\t\t\t\t\t\t      ##  ##   #######   ##  ##  ######   ##         ##     ##  ##   ##  ##    ## ##\n");
+        printf("\t\t\t\t\t\t\t\t      ##       ## # ##   ##  ##            #####     ##     ##  ##   ##        ####\n");
+        printf("\t\t\t\t\t\t\t\t      ##  ##   ##   ##   #####                 ##    ## ##  ##  ##   ##  ##    ## ##\n");
+        printf("\t\t\t\t\t\t\t\t       ####    ##   ##   ##               ######      ###    ####     ####     ##  ##\n");
+        printf("\t\t\t\t\t\t\t\t                        ####\n");
+        printf("\t\t\t\t\t\t\t\t\t\t\t\t\t  v1.0\n");
         printf("\n\t\t\t\t\t\t\t\t\t\t+-------------------------------------------------------+\n");
         printf("\t\t\t\t\t\t\t\t\t\t|                                                       |\n");
         printf("\t\t\t\t\t\t\t\t\t\t|\t              MENU PRINCIPAL                    |\n");
@@ -1127,7 +1127,7 @@ int main()
             printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
             printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
             printf("\t\t\t\t\t\t\t\t\t\t|          "VERMELHO"Opção inválida, tente novamente."VERDE"            |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                     "VERMELHO"Retornando..."VERDE"                    |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|                        "VERMELHO"Retornando..."VERDE"                    |\n");
             printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
             printf("\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
             sleep(2);
