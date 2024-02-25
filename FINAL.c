@@ -491,7 +491,7 @@ void criarNovaVenda(FILE *arquivo) {
     rewind(arquivo);
     while(fread(&produto, sizeof(Produto), 1, arquivo)) {
         if (produto.id == id) {
-                limparTela();
+        limparTela();
         printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
         printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
         printf("\t\t\t\t\t\t\t\t\t\t|\t                REALIZAR VENDA                          |\n");
@@ -509,10 +509,6 @@ void criarNovaVenda(FILE *arquivo) {
                 printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t         Quantidade inválida ou insuficiente em estoque.        \n"VERDE);
                 printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                         Tente novamente!        \n"VERDE);
                 printf("\n");
-                if(produto.quantidade>=0){
-                    menuGP();
-                    break;
-                }
                 printf("\t\t\t\t\t\t\t\t\t\t\t    > Digite a quantidade a ser vendido: ");
                 fgets(input, sizeof(input), stdin);
                 input[strcspn(input, "\n")] = 0; // Remover o caractere de nova linha
@@ -523,7 +519,8 @@ void criarNovaVenda(FILE *arquivo) {
             produto.quantidade -= quantidadeVendida;
             float valorVenda = Venda(quantidadeVendida, produto.preco);
 
-                        printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
+            limparTela();
+            printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
             printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
             printf("\t\t\t\t\t\t\t\t\t\t|\t                 RESUMO DA VENDA                        |\n");
             printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
