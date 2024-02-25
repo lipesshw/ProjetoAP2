@@ -77,12 +77,12 @@ void cadastrarProduto(FILE *arquivo)
             if (!isdigit(idString[i]))
             {
                 limparTela();
-            printf("\n\t\t\t\t\t\t\t\t\t\t +-------------------------------------------------------------+\n");
-            printf("\t\t\t\t\t\t\t\t\t\t |                                                             |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t |     "VERMELHO"O ID do produto deve conter apenas números positivos."VERDE"   |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t |                     "VERMELHO"Tente novamente..."VERDE"                      |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t |                                                             |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t +-------------------------------------------------------------+\n");
+                printf("\n\t\t\t\t\t\t\t\t\t\t +-------------------------------------------------------------+\n");
+                printf("\t\t\t\t\t\t\t\t\t\t |                                                             |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t |     "VERMELHO"O ID do produto deve conter apenas números positivos."VERDE"   |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t |                     "VERMELHO"Tente novamente..."VERDE"                      |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t |                                                             |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t +-------------------------------------------------------------+\n");
                 idValido = 0;
                 break;
             }
@@ -99,12 +99,12 @@ void cadastrarProduto(FILE *arquivo)
             {
                 if (produtoExistente.id == novoProduto.id)
                 {
-            printf("\n\t\t\t\t\t\t\t\t\t\t    +------------------------------------------------------+\n");
-            printf("\t\t\t\t\t\t\t\t\t\t    |                                                      |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t    |          "VERMELHO"Produto com o mesmo ID já existe."VERDE"           |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t    |                  "VERMELHO"Tente novamente..."VERDE"                  |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t    |                                                      |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t    +------------------------------------------------------+\n");
+                    printf("\n\t\t\t\t\t\t\t\t\t\t    +------------------------------------------------------+\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t    |                                                      |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t    |          "VERMELHO"Produto com o mesmo ID já existe."VERDE"           |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t    |                  "VERMELHO"Tente novamente..."VERDE"                  |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t    |                                                      |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t    +------------------------------------------------------+\n");
                     idValido = 0;
                     break;
                 }
@@ -119,82 +119,82 @@ void cadastrarProduto(FILE *arquivo)
     getchar();
 
     // laço para solicitar um nome válido
-do
-{
-        printf("\t\t\t\t\t\t\t\t\t\t\t         > Digite o NOME do produto: ");
-    fgets(novoProduto.nome, sizeof(novoProduto.nome), stdin);
-    novoProduto.nome[strcspn(novoProduto.nome, "\n")] = '\0'; // Remover a nova linha do nome
-
-    if (strlen(novoProduto.nome) == 0)
+    do
     {
+        printf("\t\t\t\t\t\t\t\t\t\t\t         > Digite o NOME do produto: ");
+        fgets(novoProduto.nome, sizeof(novoProduto.nome), stdin);
+        novoProduto.nome[strcspn(novoProduto.nome, "\n")] = '\0'; // Remover a nova linha do nome
+
+        if (strlen(novoProduto.nome) == 0)
+        {
             printf("\n");
             printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t              O nome do produto não pode estar vazio.        \n"VERDE);
             printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                         Tente novamente!        \n"VERDE);
             printf("\n");
             sleep(2);
-        nomeValido = 0;
-    }
-    else
-    {
-        nomeValido = 1;
-
-        // Verifica se o nome contém apenas caracteres
-        for (int i = 0; novoProduto.nome[i] != '\0'; i++)
-        {
-            if (!isalpha(novoProduto.nome[i]) && novoProduto.nome[i] != ' ')
-            {
-            printf("\n");
-            printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t          O nome do produto deve conter apenas caracteres.        \n"VERDE);
-            printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                          Tente novamente!        \n"VERDE);
-            printf("\n");
-            sleep(2);
-                nomeValido = 0;
-                break;
-            }
+            nomeValido = 0;
         }
-
-        if (nomeValido)
+        else
         {
-            // Converter o nome para letras minúsculas (ou maiúsculas)
-            for (int i = 0; novoProduto.nome[i]; i++)
+            nomeValido = 1;
+
+            // Verifica se o nome contém apenas caracteres
+            for (int i = 0; novoProduto.nome[i] != '\0'; i++)
             {
-                novoProduto.nome[i] = tolower(novoProduto.nome[i]);
-            }
-
-            // Verifica se o nome do produto já existe
-            rewind(arquivo);
-            while (fread(&produtoExistente, sizeof(Produto), 1, arquivo))
-            {
-                // Converter o nome existente para letras minúsculas (ou maiúsculas) para comparação
-                char nomeExistenteLower[50];
-                strcpy(nomeExistenteLower, produtoExistente.nome);
-                for (int i = 0; nomeExistenteLower[i]; i++)
+                if (!isalpha(novoProduto.nome[i]) && novoProduto.nome[i] != ' ')
                 {
-                    nomeExistenteLower[i] = tolower(nomeExistenteLower[i]);
-                }
-
-                if (strcmp(nomeExistenteLower, novoProduto.nome) == 0)
-                {
-
-            printf("\n");
-            printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                Produto com o mesmo nome já existe.        \n"VERDE);
-            printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                        Tente novamente...              \n"VERDE );
-            printf("\n");
-            sleep(2);
+                    printf("\n");
+                    printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t          O nome do produto deve conter apenas caracteres.        \n"VERDE);
+                    printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                          Tente novamente!        \n"VERDE);
+                    printf("\n");
+                    sleep(2);
                     nomeValido = 0;
                     break;
                 }
             }
+
+            if (nomeValido)
+            {
+                // Converter o nome para letras minúsculas (ou maiúsculas)
+                for (int i = 0; novoProduto.nome[i]; i++)
+                {
+                    novoProduto.nome[i] = tolower(novoProduto.nome[i]);
+                }
+
+                // Verifica se o nome do produto já existe
+                rewind(arquivo);
+                while (fread(&produtoExistente, sizeof(Produto), 1, arquivo))
+                {
+                    // Converter o nome existente para letras minúsculas (ou maiúsculas) para comparação
+                    char nomeExistenteLower[50];
+                    strcpy(nomeExistenteLower, produtoExistente.nome);
+                    for (int i = 0; nomeExistenteLower[i]; i++)
+                    {
+                        nomeExistenteLower[i] = tolower(nomeExistenteLower[i]);
+                    }
+
+                    if (strcmp(nomeExistenteLower, novoProduto.nome) == 0)
+                    {
+
+                        printf("\n");
+                        printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                Produto com o mesmo nome já existe.        \n"VERDE);
+                        printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                        Tente novamente...              \n"VERDE );
+                        printf("\n");
+                        sleep(2);
+                        nomeValido = 0;
+                        break;
+                    }
+                }
+            }
         }
-    }
-} while (!nomeValido);
+    } while (!nomeValido);
 
 
 // laço para solicitar um preço válid
 
 
     char precoString[50]; // String para armazenar a entrada do preço
- do {
+    do {
         printf("\t\t\t\t\t\t\t\t\t\t\t         > Digite o PREÇO do produto: ");
         scanf("%s", precoString); // Lê a entrada como uma string
 
@@ -227,17 +227,17 @@ do
 
     // laço para solicitar uma quantidade válida
     char quantString[50];
-        do {
+    do {
         printf("\t\t\t\t\t\t\t\t\t\t\t         > Digite a quantidade do produto: ");
         scanf("%s", quantString); // lê a entrada da quantidade como string
         int i;
         quantValido = 1;
         for (i = 0; quantString[i] != '\0'; i++) {
             if (!isdigit(quantString[i])) {
-                  printf("\n");
-                  printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t     A quantidade do produto deve ser apenas números positivos.        \n"VERDE);
-                  printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                          Tente novamente!              \n"VERDE);
-                  printf("\n");
+                printf("\n");
+                printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t     A quantidade do produto deve ser apenas números positivos.        \n"VERDE);
+                printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                          Tente novamente!              \n"VERDE);
+                printf("\n");
                 quantValido = 0;
                 break;
             }
@@ -316,7 +316,7 @@ void buscarProduto(FILE *arquivo, int buscarPorId, int id, char *nome)
             printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                        Tente novamente...              \n"VERDE );
             printf("\n");
             sleep(2);
-    }
+        }
 
     }
 }
@@ -346,10 +346,10 @@ void excluirProduto(FILE *arquivo, int id) {
 
         if (!valido) {
             printf("\n");
-        printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                    O ID do produto é inválido.        \n");
-        printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t         O ID do produto deve ser um número inteiro.\n");
-        printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                         Tente novamente!\n"VERDE);
-        printf("\n");
+            printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                    O ID do produto é inválido.        \n");
+            printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t         O ID do produto deve ser um número inteiro.\n");
+            printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                         Tente novamente!\n"VERDE);
+            printf("\n");
             printf("\t\t\t\t\t\t\t\t\t\t\t  > Digite o ID do produto a ser excluído: ");
         } else {
             id <= atoi(entrada);
@@ -380,27 +380,27 @@ void excluirProduto(FILE *arquivo, int id) {
     // Verificar se o produto foi encontrado
     if (!encontrado)
     {
-            printf("\n\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|\t                  EXCLUIR PRODUTO                        |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|----------------------------------------------------------------|\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|"VERMELHO"                Produto com ID %-3d não encontrado               "VERDE"|\n", id);
-            printf("\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
-            sleep(2);
-            limparTela();
+        printf("\n\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
+        printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+        printf("\t\t\t\t\t\t\t\t\t\t|\t                  EXCLUIR PRODUTO                        |\n");
+        printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+        printf("\t\t\t\t\t\t\t\t\t\t|----------------------------------------------------------------|\n");
+        printf("\t\t\t\t\t\t\t\t\t\t|"VERMELHO"                Produto com ID %-3d não encontrado               "VERDE"|\n", id);
+        printf("\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
+        sleep(2);
+        limparTela();
     }
     else
     {
-            printf("\n\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|\t                  EXCLUIR PRODUTO                        |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|----------------------------------------------------------------|\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                 Produto %d excluido com sucesso!                |\n", id);
-            printf("\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
-            sleep(2);
-            limparTela();
+        printf("\n\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
+        printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+        printf("\t\t\t\t\t\t\t\t\t\t|\t                  EXCLUIR PRODUTO                        |\n");
+        printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+        printf("\t\t\t\t\t\t\t\t\t\t|----------------------------------------------------------------|\n");
+        printf("\t\t\t\t\t\t\t\t\t\t|                 Produto %d excluido com sucesso!                |\n", id);
+        printf("\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
+        sleep(2);
+        limparTela();
     }
 
     // Se algum produto foi excluído, incrementa a variável produtosExcluidos
@@ -462,13 +462,13 @@ void criarNovaVenda(FILE *arquivo) {
     limparTela();
     int id;
     char input[50];
-        printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
-        printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
-        printf("\t\t\t\t\t\t\t\t\t\t|\t                REALIZAR VENDA                          |\n");
-        printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
-        printf("\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
-        printf("\n");
-        printf("\t\t\t\t\t\t\t\t\t\t\t   > Digite o ID do produto a ser vendido: ");
+    printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
+    printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
+    printf("\t\t\t\t\t\t\t\t\t\t|\t                REALIZAR VENDA                          |\n");
+    printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
+    printf("\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
+    printf("\n");
+    printf("\t\t\t\t\t\t\t\t\t\t\t   > Digite o ID do produto a ser vendido: ");
     fgets(input, sizeof(input), stdin);
     input[strcspn(input, "\n")] = 0; // Remover o caractere de nova linha
     while (!contemApenasDigitos(input) || sscanf(input, "%d", &id) != 1 || id <= 0) {
@@ -491,17 +491,17 @@ void criarNovaVenda(FILE *arquivo) {
     rewind(arquivo);
     while(fread(&produto, sizeof(Produto), 1, arquivo)) {
         if (produto.id == id) {
-                limparTela();
-        printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
-        printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
-        printf("\t\t\t\t\t\t\t\t\t\t|\t                REALIZAR VENDA                          |\n");
-        printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
-        printf("\t\t\t\t\t\t\t\t\t\t|---------------------------------------------------------------|\n");
-        printf("\t\t\t\t\t\t\t\t\t\t|     PRODUTO     |   %-10s                                |\n", produto.nome);
-        printf("\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
+            limparTela();
+            printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|\t                REALIZAR VENDA                          |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|---------------------------------------------------------------|\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|     PRODUTO     |   %-10s                                |\n", produto.nome);
+            printf("\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
             encontrado = 1;
             int quantidadeVendida;
-                printf("\t\t\t\t\t\t\t\t\t\t\t    > Digite a quantidade a ser vendido: ");
+            printf("\t\t\t\t\t\t\t\t\t\t\t    > Digite a quantidade a ser vendido: ");
             fgets(input, sizeof(input), stdin);
             input[strcspn(input, "\n")] = 0; // Remover o caractere de nova linha
             while (!contemApenasDigitos(input) || sscanf(input, "%d", &quantidadeVendida) != 1 || quantidadeVendida <= 0 || quantidadeVendida > produto.quantidade) {
@@ -519,7 +519,7 @@ void criarNovaVenda(FILE *arquivo) {
             produto.quantidade -= quantidadeVendida;
             float valorVenda = Venda(quantidadeVendida, produto.preco);
 
-                        printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
+            printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
             printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
             printf("\t\t\t\t\t\t\t\t\t\t|\t                 RESUMO DA VENDA                        |\n");
             printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
@@ -562,13 +562,13 @@ void criarNovaVenda(FILE *arquivo) {
     }
 
     if (!encontrado) {
-                limparTela();
-                printf("\n");
-                printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                  Produto não foi encontrado.        \n"VERDE);
-                printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                       Tente novamente!        \n"VERDE);
-                printf("\n");
-                sleep(2);
-                limparTela();
+        limparTela();
+        printf("\n");
+        printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                  Produto não foi encontrado.        \n"VERDE);
+        printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t                       Tente novamente!        \n"VERDE);
+        printf("\n");
+        sleep(2);
+        limparTela();
     } else {
         printf("\n");
         printf("\t\t\t\t\t\t\t\t\t\t\t     Venda finalizada com sucesso!");
@@ -592,31 +592,31 @@ void listarProdutos(FILE *arquivo)
     rewind(arquivo);
     limparTela();
 
-            printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------------------+\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                                  |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|\t                  LISTA DE PRODUTOS                        |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                                  |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|------------------------------------------------------------------|");
+    printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------------------+\n");
+    printf("\t\t\t\t\t\t\t\t\t\t|                                                                  |\n");
+    printf("\t\t\t\t\t\t\t\t\t\t|\t                  LISTA DE PRODUTOS                        |\n");
+    printf("\t\t\t\t\t\t\t\t\t\t|                                                                  |\n");
+    printf("\t\t\t\t\t\t\t\t\t\t|------------------------------------------------------------------|");
 
 
     // Verificar se o arquivo está vazio
     fseek(arquivo, 0, SEEK_END);
     if (ftell(arquivo) == 0)
     {
-            printf("\n\t\t\t\t\t\t\t\t\t\t|                     Nenhum produto cadastrado.                   |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------------------+\n");
-            sleep(2);
-            limparTela();
+        printf("\n\t\t\t\t\t\t\t\t\t\t|                     Nenhum produto cadastrado.                   |\n");
+        printf("\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------------------+\n");
+        sleep(2);
+        limparTela();
         return;
     }
     rewind(arquivo);
 
     while(fread(&produto, sizeof(Produto), 1, arquivo))
     {
-            printf("\n\t\t\t\t\t\t\t\t\t\t|"AZUL"    ID: " VERDE "%-4d " RESET AZUL"Nome: " VERDE "%-10s " RESET AZUL "Preço: " VERDE "%-9.2f " RESET AZUL "Quantidade: "VERDE "%-4d   |", produto.id, produto.nome, produto.preco, produto.quantidade);
+        printf("\n\t\t\t\t\t\t\t\t\t\t|"AZUL"    ID: " VERDE "%-4d " RESET AZUL"Nome: " VERDE "%-10s " RESET AZUL "Preço: " VERDE "%-9.2f " RESET AZUL "Quantidade: "VERDE "%-4d   |", produto.id, produto.nome, produto.preco, produto.quantidade);
 
     }
-printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------------------+\n");
+    printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------------------+\n");
     char res;
     printf("\n");
     printf("\t\t\t\t\t\t\t\t\t\t\t Você deseja realizar uma nova venda? [s/n]: ");
@@ -636,13 +636,13 @@ void adicionarEstoque(FILE *arquivo)
     limparTela();
     int id;
     char idString[50];
-            printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|\t                 ADICIONAR ESTOQUE                      |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+");
-            printf("\n");
-            printf("\t\t\t\t\t\t\t\t\t\t\t> Digite o ID do produto para adicionar estoque: ");
+    printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
+    printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
+    printf("\t\t\t\t\t\t\t\t\t\t|\t                 ADICIONAR ESTOQUE                      |\n");
+    printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
+    printf("\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+");
+    printf("\n");
+    printf("\t\t\t\t\t\t\t\t\t\t\t> Digite o ID do produto para adicionar estoque: ");
     scanf("%s", idString);
 
     // Verificar se todos os caracteres da string são dígitos
@@ -664,18 +664,18 @@ void adicionarEstoque(FILE *arquivo)
     }
     else
     {
-            printf("\n");
-            printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t\t        ID inválido. Tente novamente!\n"VERDE);
-            printf("\n");
+        printf("\n");
+        printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t\t        ID inválido. Tente novamente!\n"VERDE);
+        printf("\n");
         return;
     }
 
     // Verificar se o ID é positivo
     if (id < 0)
     {
-            printf("\n");
-            printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t\t        ID do produto inválido. Digite um número inteiro positivo.!\n",VERDE);
-            printf("\n");
+        printf("\n");
+        printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t\t        ID do produto inválido. Digite um número inteiro positivo.!\n",VERDE);
+        printf("\n");
         printf("\n");
         return;
     }
@@ -724,25 +724,25 @@ void adicionarEstoque(FILE *arquivo)
             }
             else
             {
-            printf("\n");
-            printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t\tQuantidade inválida. Digite um número inteiro positivo!\n"VERDE);
-            printf("\n");
+                printf("\n");
+                printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t\tQuantidade inválida. Digite um número inteiro positivo!\n"VERDE);
+                printf("\n");
                 return;
             }
 
             // Verificar se a quantidade é positiva
             if (quantidadeAdicionar <= 0)
             {
-            printf("\n");
-            printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t\tQuantidade inválida. Digite um número inteiro positivo!\n"VERDE);
-            printf("\n");
+                printf("\n");
+                printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t\tQuantidade inválida. Digite um número inteiro positivo!\n"VERDE);
+                printf("\n");
                 return;
             }
 
             // Atualizar a quantidade do produto
             produto.quantidade += quantidadeAdicionar;
             printf("\n");
-        printf(VERDE"\t\t\t\t\t\t\t\t\t\t\t        Estoque atualizado com sucesso.        \n");
+            printf(VERDE"\t\t\t\t\t\t\t\t\t\t\t        Estoque atualizado com sucesso.        \n");
             printf("\n");
         }
 
@@ -753,9 +753,9 @@ void adicionarEstoque(FILE *arquivo)
     // Se o produto não foi encontrado, mantemos o arquivo inalterado
     if (!encontrado)
     {
-            printf("\n");
-            printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t\t             Produto não encontrado!\n"VERDE);
-            printf("\n");
+        printf("\n");
+        printf(VERMELHO"\t\t\t\t\t\t\t\t\t\t\t             Produto não encontrado!\n"VERDE);
+        printf("\n");
 
         // Copiar todos os produtos do arquivo original para o arquivo temporário
         rewind(arquivo);
@@ -793,11 +793,11 @@ void adicionarEstoque(FILE *arquivo)
 void ListaSemEstoque(FILE *arquivo) {
     Produto produto;
     rewind(arquivo);
-            printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|\t            LISTAR PRODUTOS SEM ESTOQUE                 |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|---------------------------------------------------------------|");
+    printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
+    printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
+    printf("\t\t\t\t\t\t\t\t\t\t|\t            LISTAR PRODUTOS SEM ESTOQUE                 |\n");
+    printf("\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
+    printf("\t\t\t\t\t\t\t\t\t\t|---------------------------------------------------------------|");
 
     // Verificar se o arquivo está vazio
     fseek(arquivo, 0, SEEK_END);
@@ -809,31 +809,31 @@ void ListaSemEstoque(FILE *arquivo) {
         if (produto.quantidade == 0) {
             printf("\n\t\t\t\t\t\t\t\t\t\t|"AZUL"    ID: " VERDE "%-4d " RESET AZUL"Nome: " VERDE "%-10s " RESET AZUL "Preço: " VERDE "%-9.2f " RESET AZUL "Quantidade: "VERDE "%d   |", produto.id, produto.nome, produto.preco, produto.quantidade);
 
-printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
+            printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
 
             encontrado = 1; // Produto sem estoque encontrado
-    char res;
-    printf("\n");
-    printf("\t\t\t\t\t\t\t\t\t\t\tVocê adicionar estoque em algum produto? [s/n]: ");
-    scanf(" %c", &res);
-    if(res == 's' || res == 'S')
-    {
-        adicionarEstoque(arquivo);
-        break;
-    }
+            char res;
+            printf("\n");
+            printf("\t\t\t\t\t\t\t\t\t\t\tVocê adicionar estoque em algum produto? [s/n]: ");
+            scanf(" %c", &res);
+            if(res == 's' || res == 'S')
+            {
+                adicionarEstoque(arquivo);
+                break;
+            }
 
-    }
+        }
     }
 
 
     if (!encontrado || produto.quantidade > 1) {
-            printf("\n\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|          "VERMELHO"Não foi encontrado nenhum produto sem estoque."VERDE"       |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                      "VERMELHO" Tente novamente..."VERDE"                      |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                               |");
-            printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
-            sleep(3);
-            limparTela();
+        printf("\n\t\t\t\t\t\t\t\t\t\t|                                                               |\n");
+        printf("\t\t\t\t\t\t\t\t\t\t|          "VERMELHO"Não foi encontrado nenhum produto sem estoque."VERDE"       |\n");
+        printf("\t\t\t\t\t\t\t\t\t\t|                      "VERMELHO" Tente novamente..."VERDE"                      |\n");
+        printf("\t\t\t\t\t\t\t\t\t\t|                                                               |");
+        printf("\n\t\t\t\t\t\t\t\t\t\t+---------------------------------------------------------------+\n");
+        sleep(3);
+        limparTela();
     }
 
 
@@ -886,11 +886,11 @@ void gerarRelatorio(FILE *arquivo)
     fprintf(relatorioArquivo, "\nTotal em R$ das vendas realizadas: %.2f\n", totalVendido);
     fclose(relatorioArquivo);
     sleep(1);
-        printf("\n\t\t\t\t\t\t\t\t\t\t +-----------------------------------------------------+\n");
-        printf("\t\t\t\t\t\t\t\t\t\t |                                                     |\n");
-        printf("\t\t\t\t\t\t\t\t\t\t |\t      Relatório gerado com sucesso!            |\n");
-        printf("\t\t\t\t\t\t\t\t\t\t |                                                     |\n");
-        printf("\t\t\t\t\t\t\t\t\t\t +-----------------------------------------------------+\n");
+    printf("\n\t\t\t\t\t\t\t\t\t\t +-----------------------------------------------------+\n");
+    printf("\t\t\t\t\t\t\t\t\t\t |                                                     |\n");
+    printf("\t\t\t\t\t\t\t\t\t\t |\t      Relatório gerado com sucesso!            |\n");
+    printf("\t\t\t\t\t\t\t\t\t\t |                                                     |\n");
+    printf("\t\t\t\t\t\t\t\t\t\t +-----------------------------------------------------+\n");
     sleep(2);
     limparTela();
 }
@@ -925,141 +925,141 @@ void menuGP(FILE *arquivo)   //menu gerenciar programa
         printf("\n");
         printf("\t\t\t\t\t\t\t\t\t\t\t           > Escolha uma opção: ");
         scanf("%s", input);
-    // Verifica se todos os caracteres da entrada são dígitos
-    int i;
-    int isNumber = 1;
-    for (i = 0; input[i] != '\0'; i++) {
-        if (!isdigit(input[i])) {
-            isNumber = 0;
-            break;
+        // Verifica se todos os caracteres da entrada são dígitos
+        int i;
+        int isNumber = 1;
+        for (i = 0; input[i] != '\0'; i++) {
+            if (!isdigit(input[i])) {
+                isNumber = 0;
+                break;
+            }
         }
-    }
 
-    if (!isNumber) {
-        limparTela();
-        printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
-        printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
-        printf("\t\t\t\t\t\t\t\t\t\t|   "VERMELHO"A entrada deve ser um número. Tente novamente."VERDE"     |\n");
-        printf("\t\t\t\t\t\t\t\t\t\t|                    "VERMELHO"Retornando..."VERDE"                     |\n");
-        printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
-        printf("\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
-        sleep(2);
-        limparTela();
-        continue; // Volta para o início do loop
-    }
+        if (!isNumber) {
+            limparTela();
+            printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|   "VERMELHO"A entrada deve ser um número. Tente novamente."VERDE"     |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|                    "VERMELHO"Retornando..."VERDE"                     |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
+            printf("\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
+            sleep(2);
+            limparTela();
+            continue; // Volta para o início do loop
+        }
 
-    opcao = atoi(input); // Converte a entrada para inteiro
+        opcao = atoi(input); // Converte a entrada para inteiro
 
 
 
         switch(opcao)
         {
-        case 1:
-            limparTela();
-            cadastrarProduto(arquivo);
-            break;
-        case 2:
-            adicionarEstoque(arquivo);
-            break;
-        case 3:
-            limparTela();
-            printf("\n\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|\t                  EXCLUIR PRODUTO                        |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|----------------------------------------------------------------|\n");
-            printf("\t\t\t\t\t\t\t\t\t\t\t  > Digite o ID do produto a ser excluído: ");
-            int idExcluir;
-            scanf("%d", &idExcluir);
-            excluirProduto(arquivo, idExcluir);
-            break;
-        case 4:
-            limparTela();
-            listarProdutos(arquivo);
-            break;
-        case 5:
-            limparTela();
-            ListaSemEstoque(arquivo);
-            break;
-        case 6:
-            limparTela();
-            printf("\n\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|\t                   BUSCAR PRODUTO                        |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|----------------------------------------------------------------|\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|               Escolha como deseja buscar o produto:            |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|        Digite 1     |      Para realizar busca pelo ID         |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|        Digite 2     |      Para realizar busca pelo NOME       |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
-            printf("\n");
-            printf("\t\t\t\t\t\t\t\t\t\t\t           > Escolha uma opção: ");
-            int escolha;
-            scanf("%d", &escolha);
-            if (escolha == 1)
-            {
+            case 1:
+                limparTela();
+                cadastrarProduto(arquivo);
+                break;
+            case 2:
+                adicionarEstoque(arquivo);
+                break;
+            case 3:
+                limparTela();
+                printf("\n\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
+                printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t|\t                  EXCLUIR PRODUTO                        |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t|----------------------------------------------------------------|\n");
+                printf("\t\t\t\t\t\t\t\t\t\t\t  > Digite o ID do produto a ser excluído: ");
+                int idExcluir;
+                scanf("%d", &idExcluir);
+                excluirProduto(arquivo, idExcluir);
+                break;
+            case 4:
+                limparTela();
+                listarProdutos(arquivo);
+                break;
+            case 5:
+                limparTela();
+                ListaSemEstoque(arquivo);
+                break;
+            case 6:
                 limparTela();
                 printf("\n\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
                 printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
                 printf("\t\t\t\t\t\t\t\t\t\t|\t                   BUSCAR PRODUTO                        |\n");
                 printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
                 printf("\t\t\t\t\t\t\t\t\t\t|----------------------------------------------------------------|\n");
+                printf("\t\t\t\t\t\t\t\t\t\t|               Escolha como deseja buscar o produto:            |\n");
                 printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-                printf("\t\t\t\t\t\t\t\t\t\t|            Você escolheu realizar uma busca por id.            |\n");
-                printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t|        Digite 1     |      Para realizar busca pelo ID         |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t|        Digite 2     |      Para realizar busca pelo NOME       |\n");
                 printf("\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
                 printf("\n");
-                printf("\t\t\t\t\t\t\t\t\t\t\t   > Digite o ID do produto a ser buscado: ");
-                int id;
-                scanf("%d", &id);
-                buscarProduto(arquivo, 1, id, "");
-            }
-            else if (escolha == 2)
-            {
+                printf("\t\t\t\t\t\t\t\t\t\t\t           > Escolha uma opção: ");
+                int escolha;
+                scanf("%d", &escolha);
+                if (escolha == 1)
+                {
+                    limparTela();
+                    printf("\n\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|\t                   BUSCAR PRODUTO                        |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|----------------------------------------------------------------|\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|            Você escolheu realizar uma busca por id.            |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
+                    printf("\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t\t   > Digite o ID do produto a ser buscado: ");
+                    int id;
+                    scanf("%d", &id);
+                    buscarProduto(arquivo, 1, id, "");
+                }
+                else if (escolha == 2)
+                {
+                    limparTela();
+                    printf("\n\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|\t                   BUSCAR PRODUTO                        |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|----------------------------------------------------------------|\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|            Você escolheu realizar uma busca por nome.          |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
+                    printf("\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t\t > Digite o NOME do produto a ser buscado: ");
+                    char nome[50];
+                    scanf("%s", nome);
+                    buscarProduto(arquivo, 0, 0, nome);
+                }
+                else
+                {
+                    limparTela();
+                    printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|          "VERMELHO"Opção inválida, tente novamente."VERDE"            |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|                     "VERMELHO"Retornando..."VERDE"                    |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
+                    printf("\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
+                    sleep(2);
+                    limparTela();
+                }
+                break;
+            case 0:
                 limparTela();
-                printf("\n\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
-                printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-                printf("\t\t\t\t\t\t\t\t\t\t|\t                   BUSCAR PRODUTO                        |\n");
-                printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-                printf("\t\t\t\t\t\t\t\t\t\t|----------------------------------------------------------------|\n");
-                printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-                printf("\t\t\t\t\t\t\t\t\t\t|            Você escolheu realizar uma busca por nome.          |\n");
-                printf("\t\t\t\t\t\t\t\t\t\t|                                                                |\n");
-                printf("\t\t\t\t\t\t\t\t\t\t+----------------------------------------------------------------+\n");
-                printf("\n");
-                printf("\t\t\t\t\t\t\t\t\t\t\t > Digite o NOME do produto a ser buscado: ");
-                char nome[50];
-                scanf("%s", nome);
-                buscarProduto(arquivo, 0, 0, nome);
-            }
-            else
-            {
-            limparTela();
-            printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|          "VERMELHO"Opção inválida, tente novamente."VERDE"            |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                     "VERMELHO"Retornando..."VERDE"                    |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
-            sleep(2);
-            limparTela();
-            }
-            break;
-        case 0:
-            limparTela();
-            break;
-        default:
-            limparTela();
-            printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|          "VERMELHO"Opção inválida, tente novamente."VERDE"            |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                     "VERMELHO"Retornando..."VERDE"                    |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
-            sleep(2);
-            limparTela();
-            break;
+                break;
+            default:
+                limparTela();
+                printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
+                printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t|          "VERMELHO"Opção inválida, tente novamente."VERDE"            |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t|                     "VERMELHO"Retornando..."VERDE"                    |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
+                sleep(2);
+                limparTela();
+                break;
         }
     }
     while(opcao != 0);
@@ -1109,29 +1109,29 @@ int main()
 
         switch(opcao)
         {
-        case 1:
-            menuGP(produtosArquivo);
-            break;
-        case 2:
-            criarNovaVenda(produtosArquivo);
-            break;
-        case 3:
-            gerarRelatorio(produtosArquivo);
-            break;
-        case 0:
-            printf("\t\t\t\t\t\t\t\t\t\t\t           Finalizando... ");
-            sleep(1);
-            break;
-        default:
-            limparTela();
-            printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|          "VERMELHO"Opção inválida, tente novamente."VERDE"            |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                        "VERMELHO"Retornando..."VERDE"                    |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
-            printf("\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
-            sleep(2);
-            limparTela();
+            case 1:
+                menuGP(produtosArquivo);
+                break;
+            case 2:
+                criarNovaVenda(produtosArquivo);
+                break;
+            case 3:
+                gerarRelatorio(produtosArquivo);
+                break;
+            case 0:
+                printf("\t\t\t\t\t\t\t\t\t\t\t           Finalizando... ");
+                sleep(1);
+                break;
+            default:
+                limparTela();
+                printf("\n\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
+                printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t|          "VERMELHO"Opção inválida, tente novamente."VERDE"            |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t|                        "VERMELHO"Retornando..."VERDE"                    |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t|                                                      |\n");
+                printf("\t\t\t\t\t\t\t\t\t\t+------------------------------------------------------+\n");
+                sleep(2);
+                limparTela();
         }
     }
     while(opcao != 0);
