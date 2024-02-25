@@ -1086,6 +1086,16 @@ int main()
     int opcao;
     do
     {
+        printf("\n");
+        printf("\t\t\t\t\t\t\t\t                                                     ##                       ###\n");
+        printf("\t\t\t\t\t\t\t\t                                                     ##                        ##\n");
+        printf("\t\t\t\t\t\t\t\t       ####    ##  ##   ######             #####    #####    ####     ####     ##  ##\n");
+        printf("\t\t\t\t\t\t\t\t      ##  ##   #######   ##  ##  ######   ##         ##     ##  ##   ##  ##    ## ##\n");
+        printf("\t\t\t\t\t\t\t\t      ##       ## # ##   ##  ##            #####     ##     ##  ##   ##        ####\n");
+        printf("\t\t\t\t\t\t\t\t      ##  ##   ##   ##   #####                 ##    ## ##  ##  ##   ##  ##    ## ##\n");
+        printf("\t\t\t\t\t\t\t\t       ####    ##   ##   ##               ######      ###    ####     ####     ##  ##\n");
+        printf("\t\t\t\t\t\t\t\t                        ####\n");
+        printf("\t\t\t\t\t\t\t\t\t\t\t\t\t  v1.0\n");
         printf("\n\t\t\t\t\t\t\t\t\t\t+-------------------------------------------------------+\n");
         printf("\t\t\t\t\t\t\t\t\t\t|                                                       |\n");
         printf("\t\t\t\t\t\t\t\t\t\t|\t              MENU PRINCIPAL                    |\n");
